@@ -138,3 +138,64 @@ class Point:
     def polar(cls, radius: float, theta: float) -> Point:
         """Create a cartesian point from polar coordinates."""
         return cls(radius * cos(theta), radius * sin(theta))
+
+
+class Segment:
+    point_1: Point
+    point_2: Point
+
+    def __init__(self, point_1: Point, point_2: Point) -> None:
+        self.point_1 = point_1
+        self.point_2 = point_2
+
+    def change(self, line: Segment, /) -> Segment:
+        self.point_1 = line.point_1
+        self.point_2 = line.point_2
+        return self
+
+    def replace(self, point_1, point_2) -> Segment:
+        self.point_1 = point_1
+        self.point_2 = point_2
+        return self
+
+    def add(self, point: Point, /) -> Segment:
+        self.point_1.add(point)
+        self.point_2.add(point)
+        return self
+
+    def subtract(self, point: Point, /) -> Segment:
+        self.point_1.subtract(point)
+        self.point_2.subtract(point)
+        return self
+
+    def multiply(self, multiplier: float, /) -> Segment:
+        self.point_1.multiply(multiplier)
+        self.point_2.multiply(multiplier)
+        return self
+
+    def divide(self, divisor: float, /) -> Segment:
+        self.point_1.divide(divisor)
+        self.point_2.divide(divisor)
+        return self
+
+    def length(self) -> float:
+        return self.point_1.distance(self.point_2)
+
+
+class Line(Segment):
+    def __init__(self, point_1: Point, point_2: Point) -> None:
+        super().__init__(point_1, point_2)
+
+
+
+class Polygon:
+    sides: list[Segment]
+
+    def __init__(self, points: list[Point]) -> None:
+        self.points = points
+
+    def side(self, number: int) -> Iterator[Point]:
+        return
+
+pol = Polygon([Point(4, 3), Point(5, 3)])
+print(pol.side(0))
