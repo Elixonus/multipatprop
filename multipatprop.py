@@ -12,19 +12,34 @@ class System:
         self.receiver = receiver
         self.interferers = interferers
 
+    def path(self):
+        for i in range(1):
+            for interferer in self.interferers:
+                points = interferer.points
+
+                for point_1, point_2 in zip(points, points[1:] + points[:1]):
+                    pass
+
+
+
+
 
 class Transmitter:
     point: Point
+    number: int
 
-    def __init__(self, point: Point) -> None:
+    def __init__(self, point: Point, number: int) -> None:
         self.point = point
+        self.number = number
 
 
 class Receiver:
     point: Point
+    distance: float
 
-    def __init__(self, point: Point) -> None:
+    def __init__(self, point: Point, distance: float) -> None:
         self.point = point
+        self.distance = distance
 
 
 class Interferer:
@@ -33,14 +48,19 @@ class Interferer:
     def __init__(self, points: list[Point]) -> None:
         self.points = points
 
+    def stuff(self, endpoint: Point, point: Point):
+        ray: Point = point - endpoint
+
+        for point_1, point_2 in zip(self.points, self.points[1:] + self.points[:1]):
+            segment = point_2 - point_1
+
+
 
 class Absorber(Interferer):
     def __init__(self, points: list[Point]) -> None:
-        super(points)
+        super().__init__(points)
 
 
 class Reflector(Interferer):
-    def __init__(self, vertices: list[Point]):
-
-
-sys = System(None, None, [Absorber([Point(4, 3)])])
+    def __init__(self, points: list[Point]) -> None:
+        super().__init__(points)

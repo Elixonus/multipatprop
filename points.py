@@ -51,9 +51,19 @@ class Point:
         """(/) Divide point coordinates by a number, without modification to the existing point."""
         return copy(self).__truediv__(divisor)
 
+    def __rtruediv__(self, dividend: float, /) -> tuple[float, float]:
+        """(/) Divide a number twice by each point coordinate."""
+        return dividend / self.x, dividend / self.y
+
     def __itruediv__(self, divisor: float, /) -> Point:
         """(/=) Divide point coordinates by a number, with modification to the existing point."""
         return self.divide(divisor)
+
+    def __pos__(self) -> Point:
+        return copy(self)
+
+    def __neg__(self) -> Point:
+        return copy(self).multiply(-1)
 
     def __matmul__(self, point: Point, /) -> float:
         """(@) Find the dot product of caller and parameter points."""
