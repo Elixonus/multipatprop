@@ -110,7 +110,7 @@ class Point:
 
     def angle(self, point: Point, /) -> float:
         """Find the angle in radians from the caller point to the parameter point."""
-        return atan2(self.y - point.y, self.x - point.x)
+        return atan2(point.y - self.y, point.x - self.x)
 
     def dot(self, point: Point, /) -> float:
         """Find the dot product of two points as vectors."""
@@ -135,7 +135,7 @@ class Point:
         return cls(radius * cos(theta), radius * sin(theta))
 
 
-class Segment:
+class Line:
     point_1: Point
     point_2: Point
 
@@ -143,68 +143,69 @@ class Segment:
         self.point_1 = point_1
         self.point_2 = point_2
 
-    def change(self, line: Segment, /) -> Segment:
+    def __iter__(self) -> Iterator[Point]:
+        yield self.point_1
+        yield self.point_2
+
+    def set(self, line: Line, /) -> Line:
         self.point_1 = line.point_1
         self.point_2 = line.point_2
         return self
 
-    def replace(self, point_1, point_2) -> Segment:
-        self.point_1 = point_1
-        self.point_2 = point_2
-        return self
+    def vec(self) -> Point:
+        return self.point_2.copy().sub(self.point_1)
 
-    def add(self, point: Point, /) -> Segment:
+    def add(self, point: Point, /) -> Line:
         self.point_1.add(point)
         self.point_2.add(point)
         return self
 
-    def sub(self, point: Point, /) -> Segment:
+    def sub(self, point: Point, /) -> Line:
         self.point_1.sub(point)
         self.point_2.sub(point)
         return self
 
-    def mul(self, multiplier: float, /) -> Segment:
+    def mul(self, multiplier: float, /) -> Line:
         self.point_1.mul(multiplier)
         self.point_2.mul(multiplier)
         return self
 
-    def div(self, divisor: float, /) -> Segment:
+    def div(self, divisor: float, /) -> Line:
         self.point_1.div(divisor)
         self.point_2.div(divisor)
         return self
 
-    def len(self) -> float:
-        return self.point_1.dist(self.point_2)
-
     def angle(self) -> float:
         return self.point_1.angle(self.point_2)
 
+    def dot(self, line: Line) -> float:
+        return self.vec().dot(line.vec())
 
-class Line(Segment):
+    def cross(self, line: Line) -> float:
+        return self.vec().cross(line.vec())
+
+    def copy(self) -> Line:
+        return Line(self.point_1, self.point_2)
+
+
+class Segment(Line):
     def __init__(self, point_1: Point, point_2: Point) -> None:
         super().__init__(point_1, point_2)
 
+    def len(self) -> float:
+        return self.point_1.dist(self.point_2)
 
-class Ray(Segment):
+    def copy(self) -> Segment:
+        return Segment(self.point_1, self.point_2)
+
+
+class Ray(Line):
     def __init__(self, point_1: Point, point_2: Point) -> None:
         super().__init__(point_1, point_2)
 
+    def copy(self) -> Ray:
+        return Ray(self.point_1, self.point_2)
 
 
-
-
-
-class Polygon:
-    sides: list[Segment]
-
-    def __init__(self, points: list[Point]) -> None:
-        self.points = points
-
-    def side(self, number: int) -> Iterator[Point]:
-        return 1
-
-pol = Polygon([Point(4, 3), Point(5, 3)])
-print(pol.side(0))
-
-p1 = Point(5, 5)
-print(p1 is Point)
+line1 = Line(Point(0, 0), Point(1, 1))
+print(line1.angle() * 180 / 3.14159265)
