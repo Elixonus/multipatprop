@@ -1,6 +1,7 @@
 from __future__ import annotations
 from math import atan2, cos, hypot, sin
-from collections.abc import Iterator
+from collections.abc import Iterator, Sequence
+from itertools import pairwise
 
 
 class Point:
@@ -152,9 +153,6 @@ class Line:
         self.point_2 = line.point_2
         return self
 
-    def vec(self) -> Point:
-        return self.point_2.copy().sub(self.point_1)
-
     def add(self, point: Point, /) -> Line:
         self.point_1.add(point)
         self.point_2.add(point)
@@ -175,8 +173,14 @@ class Line:
         self.point_2.div(divisor)
         return self
 
-    def angle(self) -> float:
-        return self.point_1.angle(self.point_2)
+    def vec(self) -> Point:
+        return self.point_2.copy().sub(self.point_1)
+
+    def len(self) -> float:
+        return self.vec().len()
+
+    def angle(self, line: Line) -> float:
+        return self.vec().angle(line.vec())
 
     def dot(self, line: Line) -> float:
         return self.vec().dot(line.vec())
@@ -188,24 +192,15 @@ class Line:
         return Line(self.point_1, self.point_2)
 
 
-class Segment(Line):
-    def __init__(self, point_1: Point, point_2: Point) -> None:
-        super().__init__(point_1, point_2)
+class Polygon:
+    lines: list[Line]
 
-    def len(self) -> float:
-        return self.point_1.dist(self.point_2)
+    def __init__(self, points: Sequence[Point]) -> None:
+        self.lines = [Line(points[i], points[(i + 1) % len(points)]) for i in range(len(points))]
 
-    def copy(self) -> Segment:
-        return Segment(self.point_1, self.point_2)
+    def __iter__(self):
+        for line in self.lines:
+            yield line
 
-
-class Ray(Line):
-    def __init__(self, point_1: Point, point_2: Point) -> None:
-        super().__init__(point_1, point_2)
-
-    def copy(self) -> Ray:
-        return Ray(self.point_1, self.point_2)
-
-
-line1 = Line(Point(0, 0), Point(1, 1))
-print(line1.angle() * 180 / 3.14159265)
+pp = Polygon([Point(4, 3), Point(5, 3), Point(1, 9)])
+print(pp.lines)
