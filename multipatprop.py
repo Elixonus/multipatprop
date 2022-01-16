@@ -1,5 +1,6 @@
 from __future__ import annotations
-from points import Point
+from collections.abc import Iterable
+from points import Point, Line, Polygon
 
 
 class System:
@@ -13,12 +14,7 @@ class System:
         self.interferers = interferers
 
     def path(self):
-        for i in range(1):
-            for interferer in self.interferers:
-                points = interferer.points
-
-                for point_1, point_2 in zip(points, points[1:] + points[:1]):
-                    pass
+        pass
 
 
 
@@ -42,25 +38,19 @@ class Receiver:
         self.distance = distance
 
 
-class Interferer:
-    points: list[Point]
+class Interferer(Polygon):
+    point: Point
 
-    def __init__(self, points: list[Point]) -> None:
-        self.points = points
-
-    def stuff(self, endpoint: Point, point: Point):
-        ray: Point = point - endpoint
-
-        for point_1, point_2 in zip(self.points, self.points[1:] + self.points[:1]):
-            segment = point_2 - point_1
-
+    def __init__(self, point: Point, points: Iterable[Point]) -> None:
+        super().__init__(points)
+        self.point = point
 
 
 class Absorber(Interferer):
-    def __init__(self, points: list[Point]) -> None:
-        super().__init__(points)
+    def __init__(self, point: Point, points: Iterable[Point]) -> None:
+        super().__init__(point, points)
 
 
 class Reflector(Interferer):
-    def __init__(self, points: list[Point]) -> None:
-        super().__init__(points)
+    def __init__(self, point: Point, points: Iterable[Point]) -> None:
+        super().__init__(point, points)

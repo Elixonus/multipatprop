@@ -1,6 +1,6 @@
 from __future__ import annotations
 from math import atan2, cos, hypot, sin
-from collections.abc import Iterator, Sequence
+from collections.abc import Iterator, Sequence, Iterable
 from itertools import pairwise
 
 
@@ -195,12 +195,14 @@ class Line:
 class Polygon:
     lines: list[Line]
 
-    def __init__(self, points: Sequence[Point]) -> None:
-        self.lines = [Line(points[i], points[(i + 1) % len(points)]) for i in range(len(points))]
+    def __init__(self, points: Iterable[Point]) -> None:
+        lines = [Line(point_1, point_2) for point_1, point_2 in pairwise(points)]
+        lines.append(Line(lines[-1].point_2, lines[0].point_1))
+        self.lines = lines
 
     def __iter__(self):
         for line in self.lines:
             yield line
 
-pp = Polygon([Point(4, 3), Point(5, 3), Point(1, 9)])
-print(pp.lines)
+    def copy(self) -> Polygon:
+        return Polygon([line.point_1 for line in self.lines])
