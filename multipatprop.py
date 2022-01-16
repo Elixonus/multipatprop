@@ -22,11 +22,11 @@ class System:
 
 class Transmitter:
     point: Point
-    number: int
+    transmissions: int
 
-    def __init__(self, point: Point, number: int) -> None:
+    def __init__(self, point: Point, transmissions: int) -> None:
         self.point = point
-        self.number = number
+        self.transmissions = transmissions
 
 
 class Receiver:
@@ -44,6 +44,14 @@ class Interferer(Polygon):
     def __init__(self, point: Point, points: Iterable[Point]) -> None:
         super().__init__(points)
         self.point = point
+
+    def interfere(self, transmission: Line):
+        for line in self.lines:
+            v1 = transmission.point_1 - line.point_1
+            v2 = line.vec()
+
+
+
 
 
 class Absorber(Interferer):

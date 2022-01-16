@@ -1,6 +1,6 @@
 from __future__ import annotations
 from math import atan2, cos, hypot, sin
-from collections.abc import Iterator, Sequence, Iterable
+from collections.abc import Iterable, Iterator
 from itertools import pairwise
 
 
