@@ -1,6 +1,7 @@
 from __future__ import annotations
 from collections.abc import Iterable
-from points import Point, Line, Polygon
+from sympy import Point2D, Ray2D, Polygon
+
 
 
 class System:
@@ -13,43 +14,34 @@ class System:
         self.receiver = receiver
         self.interferers = interferers
 
-    def path(self):
-        pass
+    def path(self, ray: Ray2D):
+        for interferer in self.interferers:
+            print(interferer.polygon.intersect(ray))
 
 
 
 
 
 class Transmitter:
-    point: Point
-    transmissions: int
+    center: Point2D
 
-    def __init__(self, point: Point, transmissions: int) -> None:
+    def __init__(self, point: Point2D) -> None:
         self.point = point
-        self.transmissions = transmissions
 
 
 class Receiver:
-    point: Point
-    distance: float
+    center: Point2D
 
-    def __init__(self, point: Point, distance: float) -> None:
-        self.point = point
-        self.distance = distance
-
-
-class Interferer(Polygon):
-    point: Point
-
-    def __init__(self, point: Point, points: Iterable[Point]) -> None:
-        super().__init__(points)
+    def __init__(self, point: Point2D) -> None:
         self.point = point
 
-    def interfere(self, transmission: Line):
-        for line in self.lines:
-            v1 = transmission.point_1 - line.point_1
-            v2 = line.vec()
 
+class Interferer:
+    center: Point2D
+    polygon: Polygon
+
+    def __init__(self, center: Point2D, points: Iterable[Point2D]) -> None:
+        self.polygon = Polygon(*points)
 
 
 

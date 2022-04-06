@@ -1,9 +1,10 @@
 from __future__ import annotations
 import cairo
-from points import Point
-import multipatprop as mpp
+from multipatprop import System, Transmitter, Receiver, Interferer, Point2D, Ray2D, Polygon
 
-system = mpp.System(mpp.Transmitter(Point(4, 3), 20), mpp.Receiver(Point(5, 8), 10), [mpp.Interferer([Point(6, 3), Point(7, 3), Point(4, 9)])])
+#system = mpp.System(mpp.Transmitter(Point(4, 3), 20), mpp.Receiver(Point(5, 8), 10), [mpp.Interferer([Point(6, 3), Point(7, 3), Point(4, 9)])])
+system = System(Transmitter(Point2D(0, 0)), Receiver(Point2D(0, 0)), [Interferer(Point2D(0, 0), [Point2D(0, 0), Point2D(1, 0), Point2D(0, 1)])])
+system.path(Ray2D(Point2D(-1, -1), Point2D(0, 0)))
 
 minimum = Point(-3, -3)
 maximum = Point(10, 10)
