@@ -8,7 +8,7 @@ receiver = Receiver(Point2D(9, 8))
 interferers = [Interferer(Polygon(Point2D(5, 5), Point2D(2, 5), Point2D(5, 3)))]
 
 system = System(transmitter, receiver, interferers)
-system.path(Ray2D(Point2D(-1, -1), Point2D(0, 0)))
+system.get_path(Ray2D(Point2D(-1, -1), Point2D(0, 0)))
 
 camera_position = Point2D(5, 5)
 camera_zoom = 0.1

@@ -12,9 +12,22 @@ class System:
         self.receiver = receiver
         self.interferers = interferers
 
-    def path(self, ray: Ray2D):
+    def get_path(self, ray: Ray2D):
+        closest = False
+        closest_point = None
+        closest_side = None
+        closest_interferer = None
         for interferer in self.interferers:
-            print(interferer.polygon.intersect(ray))
+            for side in interferer.polygon.sides:
+                intersections = ray.intersection(side)
+                if len(intersections) > 0:
+                    point = intersections[0]
+                    if not closest or ray.p1.distance(point) < ray.p1.distance(closest_point):
+                        closest_point = point
+                        closest_side = side
+                        closest_interferer = interferer
+        print(closest_side)
+
 
 
 
