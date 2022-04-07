@@ -1,6 +1,6 @@
 from __future__ import annotations
 from math import pi, tau, atan2
-from sympy import Point2D, Ray2D, Polygon
+from sympy import Point2D, Ray2D, Polygon, Circle
 
 
 class System:
@@ -12,6 +12,20 @@ class System:
         self.transmitter = transmitter
         self.receiver = receiver
         self.interferers = interferers
+
+    def get_paths_propagated(self, starting_number: int, receiver_diameter: float, max_reflections: int) -> list[tuple[list[Point2D], float | None]]:
+        paths = []
+        for n in range(starting_number):
+            path = self.get_path(tau * (n / starting_number), max_reflections)
+            if path[1] is None:
+                continue
+
+            propagated_ray = Ray2D(path[0][-1], angle=path[1])
+            receiver_circle = Circle(self.receiver.position, receiver_diameter / 2)
+            if len(propagated_ray.intersection(receiver_circle)) > 0:
+                paths.append(path)
+        return paths
+
 
     def get_paths(self, starting_number: int, max_reflections: int) -> list[tuple[list[Point2D], float | None]]:
         paths = [self.get_path(tau * (n / starting_number), max_reflections) for n in range(starting_number)]
