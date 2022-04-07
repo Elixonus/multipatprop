@@ -3,12 +3,12 @@ from math import tau
 import cairo
 from multipatprop import System, Transmitter, Receiver, Interferer, Point2D, Ray2D, Polygon
 
-transmitter = Transmitter(Point2D(1, 1))
+transmitter = Transmitter(Point2D(3, 3))
 receiver = Receiver(Point2D(9, 8))
-interferers = [Interferer(Polygon(Point2D(5, 5), Point2D(2, 5), Point2D(5, 3)))]
+interferers = [Interferer(Polygon(Point2D(5, 5), Point2D(2, 5), Point2D(5, 2)))]
 
 system = System(transmitter, receiver, interferers)
-system.get_path(Ray2D(Point2D(-1, -1), Point2D(0, 0)))
+system.get_path(0, max_reflections=100)
 
 camera_position = Point2D(5, 5)
 camera_zoom = 0.1
@@ -21,7 +21,7 @@ with cairo.ImageSurface(cairo.FORMAT_RGB24, 500, 500) as surface:
     context.scale(camera_zoom, camera_zoom)
     context.translate(-camera_position.x, -camera_position.y)
 
-    context.arc(system.transmitter.point.x, system.transmitter.point.y, 0.2, 0, tau)
+    context.arc(system.transmitter.position.x, system.transmitter.position.y, 0.2, 0, tau)
     context.set_source_rgb(1, 0, 0)
     context.fill()
 
