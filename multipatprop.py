@@ -1,7 +1,5 @@
 from __future__ import annotations
-from collections.abc import Iterable
 from sympy import Point2D, Ray2D, Polygon
-
 
 
 class System:
@@ -23,34 +21,33 @@ class System:
 
 
 class Transmitter:
-    center: Point2D
+    position: Point2D
 
-    def __init__(self, point: Point2D) -> None:
-        self.point = point
+    def __init__(self, position: Point2D) -> None:
+        self.point = position
 
 
 class Receiver:
-    center: Point2D
+    position: Point2D
 
-    def __init__(self, point: Point2D) -> None:
-        self.point = point
+    def __init__(self, position: Point2D) -> None:
+        self.position = position
 
 
 class Interferer:
-    center: Point2D
     polygon: Polygon
 
-    def __init__(self, center: Point2D, points: Iterable[Point2D]) -> None:
-        self.polygon = Polygon(*points)
+    def __init__(self, polygon: Polygon) -> None:
+        self.polygon = polygon
 
 
 
 
 class Absorber(Interferer):
-    def __init__(self, point: Point, points: Iterable[Point]) -> None:
-        super().__init__(point, points)
+    def __init__(self, position: Point2D, polygon: Polygon) -> None:
+        super().__init__(position, polygon)
 
 
 class Reflector(Interferer):
-    def __init__(self, point: Point, points: Iterable[Point]) -> None:
-        super().__init__(point, points)
+    def __init__(self, position: Point2D, polygon: Polygon) -> None:
+        super().__init__(position, polygon)

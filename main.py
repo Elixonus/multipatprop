@@ -2,33 +2,39 @@ from __future__ import annotations
 import cairo
 from multipatprop import System, Transmitter, Receiver, Interferer, Point2D, Ray2D, Polygon
 
-#system = mpp.System(mpp.Transmitter(Point(4, 3), 20), mpp.Receiver(Point(5, 8), 10), [mpp.Interferer([Point(6, 3), Point(7, 3), Point(4, 9)])])
-system = System(Transmitter(Point2D(0, 0)), Receiver(Point2D(0, 0)), [Interferer(Point2D(0, 0), [Point2D(0, 0), Point2D(1, 0), Point2D(0, 1)])])
+transmitter = Transmitter(Point2D(0, 0))
+receiver = Receiver(Point2D(0, 0))
+interferers = [Interferer(Point2D())]
+
+system = System(, , [Interferer(Point2D(0, 0), [Point2D(0, 0), Point2D(1, 0), Point2D(0, 1)])])
 system.path(Ray2D(Point2D(-1, -1), Point2D(0, 0)))
 
-minimum = Point(-3, -3)
-maximum = Point(10, 10)
+camera_position = Point2D(3.5, 3.5)
+camera_zoom = 0.2
 
 with cairo.ImageSurface(cairo.FORMAT_RGB24, 500, 500) as surface:
     context = cairo.Context(surface)
-    context.translate(-minimum.x, -minimum.y)
-    context.scale(*(1 / (maximum - minimum)))
     context.scale(500, 500)
+    context.translate(0.5, 0.5)
+    context.scale(1, -1)
+    context.translate(-camera_position.x, -camera_position.y)
+    context.scale(camera_zoom, camera_zoom)
 
-    context.arc(*system.transmitter.point, 0.1, 0, 6)
+    context.arc(system.transmitter.point.x, system.transmitter.point.y, 0.1, 0, 6)
     context.set_source_rgb(1, 0, 0)
     context.fill()
 
-    context.arc(*system.receiver.point, 0.1, 0, 6)
+    context.arc(system.receiver.position.x, system.receiver.position.y, 0.1, 0, 6)
     context.set_source_rgb(0, 0, 1)
     context.fill()
 
     for interferer in system.interferers:
-        for point in interferer.points:
+        for vertex in interferer.polygon.vertices:
+            print(vertex)
             context.line_to(*point)
         context.close_path()
         context.set_source_rgb(0, 1, 0)
         context.set_line_width(0.05)
         context.stroke()
 
-    surface.write_to_png("test.png")
+    surface.write_to_png("render.png")
