@@ -1,5 +1,5 @@
 from __future__ import annotations
-from math import tau
+from math import cos, sin, tau
 import cairo
 from multipatprop import System, Transmitter, Receiver, Interferer, Point2D, Ray2D, Polygon
 
@@ -8,7 +8,6 @@ receiver = Receiver(Point2D(9, 8))
 interferers = [Interferer(Polygon(Point2D(5, 5), Point2D(2, 5), Point2D(5, 2)))]
 
 system = System(transmitter, receiver, interferers)
-system.get_path(0, max_reflections=100)
 
 camera_position = Point2D(5, 5)
 camera_zoom = 0.1
@@ -37,5 +36,18 @@ with cairo.ImageSurface(cairo.FORMAT_RGB24, 500, 500) as surface:
         context.set_line_width(0.05)
         context.set_line_join(cairo.LINE_JOIN_ROUND)
         context.stroke()
+
+    paths = system.get_paths(starting_number=10, max_reflections=10)
+    for path in paths:
+        for point in path[0]:
+            context.line_to(point.x, point.y)
+        if path[1] is not None:
+            context.rel_line_to(100 * cos(path[1]), 100 * sin(path[1]))
+        context.set_source_rgb(1, 1, 1)
+        context.set_line_width(0.05)
+        context.set_line_join(cairo.LINE_JOIN_ROUND)
+        context.stroke()
+
+
 
     surface.write_to_png("render.png")
