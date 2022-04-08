@@ -5,12 +5,12 @@ from multipatprop import System, Transmitter, Receiver, Interferer, Vector, Poin
 
 
 transmitter = Transmitter(Point(4, 3))
-receiver = Receiver(Point(9, 8))
+receiver = Receiver(Point(6, 6))
 interferers = [Interferer([Point(7, 2), Point(8, 5), Point(5, 2)])]
 
 system = System(transmitter, receiver, interferers)
-paths = system.get_paths(starting_number=100, max_reflections=10)
-#paths_propagated = system.get_paths_propagated(starting_number=100, receiver_diameter=1.6, max_reflections=10)
+paths = system.get_paths(starting_number=25, max_reflections=10)
+paths_propagated = system.get_paths_propagated(starting_number=100, receiver_diameter=1.6, max_reflections=10)
 
 camera_position = Point(5, 5)
 camera_zoom = 0.1
@@ -57,7 +57,7 @@ with cairo.ImageSurface(cairo.FORMAT_RGB24, 500, 500) as surface:
         context.set_line_width(0.02)
         context.set_line_join(cairo.LINE_JOIN_ROUND)
         context.stroke()
-    """    
+
     for path_propagated in paths_propagated:
         for point in path_propagated:
             context.line_to(point.x, point.y)
@@ -65,7 +65,7 @@ with cairo.ImageSurface(cairo.FORMAT_RGB24, 500, 500) as surface:
         context.set_line_width(0.02)
         context.set_line_join(cairo.LINE_JOIN_ROUND)
         context.stroke()
-    """
+
     context.arc(system.transmitter.position.x, system.transmitter.position.y, 0.4, 0, tau)
     context.set_source_rgb(1, 0, 0)
     context.fill()

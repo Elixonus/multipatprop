@@ -13,11 +13,12 @@ class System:
         self.transmitter = transmitter
         self.receiver = receiver
         self.interferers = interferers
-    """
+
     def get_paths_propagated(self, starting_number: int, receiver_diameter: float, max_reflections: int) -> list[list[Point2D]]:
         paths = []
         for n in range(starting_number):
-            path = self.get_path(tau * (n / starting_number), max_reflections)
+            angle = tau * (n / starting_number)
+            path = self.get_path(Vector(cos(angle), sin(angle)), max_reflections)
             if path[1] is None:
                 continue
             propagated_ray = Ray2D(path[0][-1], angle=path[1])
@@ -26,7 +27,7 @@ class System:
                 path[0].append(self.receiver.position)
                 paths.append(path[0])
         return paths
-    """
+
 
     def get_paths(self, starting_number: int, max_reflections: int) -> list[tuple[list[Point], Vector | None]]:
         paths = []
@@ -46,7 +47,7 @@ class System:
             closest_point = None
             closest_segment = None
             for interferer in self.interferers:
-                for segment in interferer.segments:
+                for s, segment in enumerate(interferer.segments):
                     if segment is segment_ignore:
                         continue
                     intersection = ray.intersect(segment)
@@ -56,10 +57,11 @@ class System:
                             closest = True
                             closest_point = point
                             closest_segment = segment
+
             if not closest:
                 return path, vector
             path.append(closest_point)
-            normal = Vector(closest_segment.p2.y - closest_segment.p1.y, closest_segment.p1.x - closest_segment.p2.x)
+            normal = Vector(-closest_segment.v.y, closest_segment.v.x).normalized()
             vector = vector.reflect(normal)
             ray = Ray(closest_point, vector)
             segment_ignore = closest_segment
@@ -93,4 +95,5 @@ class Interferer:
         for point_1, point_2 in pairwise(points + [points[0]]):
             segment = Segment(point_1, point_2)
             self.segments.append(segment)
+
 
