@@ -1,7 +1,7 @@
 from __future__ import annotations
 from math import cos, sin, tau
 import cairo
-from multipatprop import System, Transmitter, Receiver, Interferer, Vector, Point, Ray, Segment, Circle
+from multipatprop import System, Transmitter, Receiver, Interferer, Point
 
 
 transmitter = Transmitter(Point(4, 3))
@@ -52,7 +52,7 @@ with cairo.ImageSurface(cairo.FORMAT_RGB24, 1000, 1000) as surface:
         for point in path_propagated[0]:
             context.line_to(point.x, point.y)
         context.line_to(system.receiver.position.x, system.receiver.position.y)
-        context.set_source_rgb(1, 1, 1)
+        context.set_source_rgb(0, 1, 0)
         context.set_line_width(0.02)
         context.set_line_join(cairo.LINE_JOIN_ROUND)
         context.set_line_cap(cairo.LINE_CAP_ROUND)

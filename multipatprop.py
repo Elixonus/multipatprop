@@ -1,7 +1,9 @@
+"""A library for simulating multipath propagation of electromagnetic waves under interference."""
+
 from __future__ import annotations
-from math import pi, tau, cos, sin
+from math import tau, cos, sin
 from itertools import pairwise
-from euclid import Vector2 as Vector, Point2 as Point, Ray2 as Ray, LineSegment2 as Segment, Circle
+from euclid import Point2 as Point, Vector2 as Vector, Ray2 as Ray, LineSegment2 as Segment
 
 
 class System:
@@ -70,12 +72,10 @@ class System:
         return path, None
 
 
-
-
-
 class Transmitter:
     """A device that sends electromagnetic waves in every direction."""
     position: Point
+
     def __init__(self, position: Point) -> None:
         self.position = position
 
@@ -83,6 +83,7 @@ class Transmitter:
 class Receiver:
     """A device that receives electromagnetic waves from a transmitter."""
     position: Point
+
     def __init__(self, position: Point) -> None:
         self.position = position
 
@@ -91,6 +92,7 @@ class Interferer:
     """An obstruction between the transmitter and receiver that reflects incoming light."""
     points: list[Point]
     segments: list[Segment]
+
     def __init__(self, points: list[Point]) -> None:
         self.points = points
         self.segments = []
