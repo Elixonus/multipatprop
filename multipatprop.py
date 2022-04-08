@@ -110,10 +110,20 @@ class Interferer:
         return cls(points)
 
     @classmethod
-    def square(cls, length: float, position: Point, rotation: float) -> Interferer:
+    def square(cls, position: Point, length: float, rotation: float) -> Interferer:
         length_half = length / 2
         points = [Point(length_half, length_half),
                   Point(length_half, -length_half),
                   Point(-length_half, -length_half),
                   Point(-length_half, length_half)]
+        return cls.shape(points, position, 1, rotation)
+
+    @classmethod
+    def rectangle(cls, position: Point, length: float, width: float, rotation: float) -> Interferer:
+        length_half = length / 2
+        width_half = width / 2
+        points = [Point(length_half, width_half),
+                  Point(length_half, -width_half),
+                  Point(-length_half, -width_half),
+                  Point(-length_half, width_half)]
         return cls.shape(points, position, 1, rotation)
