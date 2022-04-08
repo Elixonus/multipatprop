@@ -1,10 +1,11 @@
 from __future__ import annotations
-from math import pi, tau, cos, sin, atan2
+from math import pi, tau, cos, sin
 from itertools import pairwise
 from euclid import Vector2 as Vector, Point2 as Point, Ray2 as Ray, LineSegment2 as Segment, Circle
 
 
 class System:
+    """A multipath propagation system where a transmitter and receiver exist as well as interferers."""
     transmitter: Transmitter
     receiver: Receiver
     interferers: list[Interferer]
@@ -15,6 +16,8 @@ class System:
         self.interferers = interferers
 
     def get_paths_propagated(self, starting_number: int, receiver_diameter: float, max_reflections: int) -> list[tuple[list[Point], Vector]]:
+        """Finds the path of a number of propagated transmissions distributed evenly in every direction.
+        Each path returns with a vector indicating the last direction."""
         paths = []
         for n in range(starting_number):
             angle = tau * (n / starting_number)
@@ -26,16 +29,17 @@ class System:
                 paths.append(path)
         return paths
 
-
     def get_paths(self, starting_number: int, max_reflections: int) -> list[tuple[list[Point], Vector | None]]:
+        """Finds the path of a number of transmissions distributed evenly in every direction.
+        Each path returns with vector only if max_reflections is not reached."""
         paths = []
         for n in range(starting_number):
             angle = tau * (n / starting_number)
             paths.append(self.get_path(Vector(cos(angle), sin(angle)), max_reflections))
         return paths
 
-
     def get_path(self, starting_vector: Vector, max_reflections: int) -> tuple[list[Point], Vector | None]:
+        """Finds the path of one transmission, returns with vector only if max_reflections is not reached."""
         path = [self.transmitter.position.copy()]
         ray = Ray(path[0], starting_vector)
         vector = starting_vector
@@ -70,23 +74,23 @@ class System:
 
 
 class Transmitter:
+    """A device that sends electromagnetic waves in every direction."""
     position: Point
-
     def __init__(self, position: Point) -> None:
         self.position = position
 
 
 class Receiver:
+    """A device that receives electromagnetic waves from a transmitter."""
     position: Point
-
     def __init__(self, position: Point) -> None:
         self.position = position
 
 
 class Interferer:
+    """An obstruction between the transmitter and receiver that reflects incoming light."""
     points: list[Point]
     segments: list[Segment]
-
     def __init__(self, points: list[Point]) -> None:
         self.points = points
         self.segments = []
