@@ -1,21 +1,21 @@
 from __future__ import annotations
 from math import cos, sin, tau
 import cairo
-from multipatprop import System, Transmitter, Receiver, Interferer, Point, Ray, Segment, Circle
+from multipatprop import System, Transmitter, Receiver, Interferer, Vector, Point, Ray, Segment, Circle
 
 
-transmitter = Transmitter(Point2D(3, 3))
-receiver = Receiver(Point2D(9, 8))
-interferers = [Interferer(Polygon(Point2D(7, 2), Point2D(8, 5), Point2D(5, 2)))]
+transmitter = Transmitter(Point(3, 3))
+receiver = Receiver(Point(9, 8))
+interferers = [Interferer([Point(7, 2), Point(8, 5), Point(5, 2)])]
 
 system = System(transmitter, receiver, interferers)
-paths = system.get_paths(starting_number=100, max_reflections=10)
-paths_propagated = system.get_paths_propagated(starting_number=100, receiver_diameter=1.6, max_reflections=10)
+#paths = system.get_paths(starting_number=100, max_reflections=10)
+#paths_propagated = system.get_paths_propagated(starting_number=100, receiver_diameter=1.6, max_reflections=10)
 
-camera_position = Point2D(5, 5)
+camera_position = Point(5, 5)
 camera_zoom = 0.1
 
-print(timeit(main))
+print(system.get_path(Vector(1, 0), max_reflections=10))
 
 with cairo.ImageSurface(cairo.FORMAT_RGB24, 500, 500) as surface:
     context = cairo.Context(surface)
@@ -26,14 +26,14 @@ with cairo.ImageSurface(cairo.FORMAT_RGB24, 500, 500) as surface:
     context.translate(-camera_position.x, -camera_position.y)
 
     for interferer in system.interferers:
-        for vertex in interferer.polygon.vertices:
-            context.line_to(vertex.x, vertex.y)
+        for point in interferer.points:
+            context.line_to(point.x, point.y)
         context.close_path()
         context.set_source_rgb(0, 1, 0)
         context.set_line_width(0.05)
         context.set_line_join(cairo.LINE_JOIN_ROUND)
         context.stroke()
-
+    """
     for path in paths:
         for point in path[0]:
             context.line_to(point.x, point.y)
@@ -51,6 +51,7 @@ with cairo.ImageSurface(cairo.FORMAT_RGB24, 500, 500) as surface:
         context.set_line_width(0.02)
         context.set_line_join(cairo.LINE_JOIN_ROUND)
         context.stroke()
+    """
 
     context.arc(system.transmitter.position.x, system.transmitter.position.y, 0.4, 0, tau)
     context.set_source_rgb(1, 0, 0)

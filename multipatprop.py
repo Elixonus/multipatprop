@@ -1,7 +1,8 @@
 from __future__ import annotations
-from math import pi, tau, atan2
+from math import pi, tau, cos, sin, atan2
 from itertools import pairwise
-from euclid import Point2 as Point, Ray2 as Ray, LineSegment2 as Segment, Circle as Circle
+from euclid import Vector2 as Vector, Point2 as Point, Ray2 as Ray, LineSegment2 as Segment, Circle
+
 
 class System:
     transmitter: Transmitter
@@ -12,7 +13,7 @@ class System:
         self.transmitter = transmitter
         self.receiver = receiver
         self.interferers = interferers
-
+    """
     def get_paths_propagated(self, starting_number: int, receiver_diameter: float, max_reflections: int) -> list[list[Point2D]]:
         paths = []
         for n in range(starting_number):
@@ -25,39 +26,39 @@ class System:
                 path[0].append(self.receiver.position)
                 paths.append(path[0])
         return paths
+    """
 
-
-    def get_paths(self, starting_number: int, max_reflections: int) -> list[tuple[list[Point2D], float | None]]:
+    def get_paths(self, starting_number: int, max_reflections: int) -> list[tuple[list[Point], float | None]]:
         paths = [self.get_path(tau * (n / starting_number), max_reflections) for n in range(starting_number)]
         return paths
 
-    def get_path(self, starting_angle: float, max_reflections: int) -> tuple[list[Point2D], float | None]:
+
+    def get_path(self, starting_vector: Vector, max_reflections: int) -> tuple[list[Point], Vector | None]:
         path = [self.transmitter.position.copy()]
-        ray = Ray2D(path[0], angle=starting_angle)
-        angle = starting_angle
-        side_ignore = None
+        ray = Ray(path[0], starting_vector)
+        vector = starting_vector
+        segment_ignore = None
         for r in range(max_reflections):
             closest = False
             closest_point = None
-            closest_side = None
+            closest_segment = None
             for interferer in self.interferers:
-                for side in interferer.polygon.sides:
-                    if side == side_ignore:
+                for segment in interferer.segments:
+                    if segment is segment_ignore:
                         continue
-                    intersections = ray.intersection(side)
-                    if len(intersections) > 0:
-                        point = intersections[0]
+                    intersection = ray.intersect(segment)
+                    if type(intersection) is Point:
+                        point = intersection
                         if not closest or ray.p1.distance(point) < ray.p1.distance(closest_point):
                             closest = True
                             closest_point = point
-                            closest_side = side
+                            closest_segment = segment
             if not closest:
-                return path, angle
-
+                return path, vector
             path.append(closest_point)
-            angle = 2 * atan2(closest_side.direction.y, closest_side.direction.x) - angle
-            ray = Ray2D(closest_point, angle=angle)
-            side_ignore = closest_side
+            vector = vector.reflect(Vector(closest_segment.p1.x - closest_segment.p2.x, closest_segment.p1.y - closest_segment.p2.y))
+            ray = Ray(closest_point, vector)
+            segment_ignore = closest_segment
         return path, None
 
 
@@ -88,3 +89,4 @@ class Interferer:
         for point_1, point_2 in pairwise(points + [points[0]]):
             segment = Segment(point_1, point_2)
             self.segments.append(segment)
+
