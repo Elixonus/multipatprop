@@ -1,7 +1,7 @@
 """A library for simulating multipath propagation of electromagnetic waves under interference."""
 
 from __future__ import annotations
-from math import tau, cos, sin
+from math import tau, cos, sin, atan2, hypot
 from itertools import pairwise
 from euclid import Point2 as Point, Vector2 as Vector, Ray2 as Ray, LineSegment2 as Segment
 
@@ -100,4 +100,20 @@ class Interferer:
             segment = Segment(point_1, point_2)
             self.segments.append(segment)
 
+    @classmethod
+    def shape(cls, points: list[Point], position: Point, scale: float, rotation: float) -> Interferer:
+        for point in points:
+            angle = atan2(point.y, point.x) + rotation
+            radius = hypot(point.x, point.y) * scale
+            point.x = position.x + radius * cos(angle)
+            point.y = position.y + radius * sin(angle)
+        return cls(points)
 
+    @classmethod
+    def square(cls, length: float, position: Point, rotation: float) -> Interferer:
+        length_half = length / 2
+        points = [Point(length_half, length_half),
+                  Point(length_half, -length_half),
+                  Point(-length_half, -length_half),
+                  Point(-length_half, length_half)]
+        return cls.shape(points, position, 1, rotation)
