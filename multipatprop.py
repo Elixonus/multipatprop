@@ -1,6 +1,7 @@
 from __future__ import annotations
 from math import pi, tau, atan2
-from sympy import Point2D, Ray2D, Polygon, Circle
+from itertools import pairwise
+from euclid import Point2 as Point, Ray2 as Ray, LineSegment2 as Segment, Circle as Circle
 
 class System:
     transmitter: Transmitter
@@ -64,33 +65,26 @@ class System:
 
 
 class Transmitter:
-    position: Point2D
+    position: Point
 
-    def __init__(self, position: Point2D) -> None:
+    def __init__(self, position: Point) -> None:
         self.position = position
 
 
 class Receiver:
-    position: Point2D
+    position: Point
 
-    def __init__(self, position: Point2D) -> None:
+    def __init__(self, position: Point) -> None:
         self.position = position
 
 
 class Interferer:
-    polygon: Polygon
+    points: list[Point]
+    segments: list[Segment]
 
-    def __init__(self, polygon: Polygon) -> None:
-        self.polygon = polygon
-
-
-
-
-class Absorber(Interferer):
-    def __init__(self, position: Point2D, polygon: Polygon) -> None:
-        super().__init__(position, polygon)
-
-
-class Reflector(Interferer):
-    def __init__(self, position: Point2D, polygon: Polygon) -> None:
-        super().__init__(position, polygon)
+    def __init__(self, points: list[Point]) -> None:
+        self.points = points
+        self.segments = []
+        for point_1, point_2 in pairwise(points + [points[0]]):
+            segment = Segment(point_1, point_2)
+            self.segments.append(segment)

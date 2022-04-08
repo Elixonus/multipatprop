@@ -1,7 +1,7 @@
 from __future__ import annotations
 from math import cos, sin, tau
 import cairo
-from multipatprop import System, Transmitter, Receiver, Interferer, Point2D, Ray2D, Polygon
+from multipatprop import System, Transmitter, Receiver, Interferer, Point, Ray, Segment, Circle
 
 
 transmitter = Transmitter(Point2D(3, 3))
