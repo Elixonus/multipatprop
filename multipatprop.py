@@ -28,8 +28,11 @@ class System:
         return paths
     """
 
-    def get_paths(self, starting_number: int, max_reflections: int) -> list[tuple[list[Point], float | None]]:
-        paths = [self.get_path(tau * (n / starting_number), max_reflections) for n in range(starting_number)]
+    def get_paths(self, starting_number: int, max_reflections: int) -> list[tuple[list[Point], Vector | None]]:
+        paths = []
+        for n in range(starting_number):
+            angle = tau * (n / starting_number)
+            paths.append(self.get_path(Vector(cos(angle), sin(angle)), max_reflections))
         return paths
 
 
@@ -56,7 +59,8 @@ class System:
             if not closest:
                 return path, vector
             path.append(closest_point)
-            vector = vector.reflect(Vector(closest_segment.p1.x - closest_segment.p2.x, closest_segment.p1.y - closest_segment.p2.y))
+            normal = Vector(closest_segment.p2.y - closest_segment.p1.y, closest_segment.p1.x - closest_segment.p2.x)
+            vector = vector.reflect(normal)
             ray = Ray(closest_point, vector)
             segment_ignore = closest_segment
         return path, None

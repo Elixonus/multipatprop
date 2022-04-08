@@ -4,18 +4,19 @@ import cairo
 from multipatprop import System, Transmitter, Receiver, Interferer, Vector, Point, Ray, Segment, Circle
 
 
-transmitter = Transmitter(Point(3, 3))
+transmitter = Transmitter(Point(4, 3))
 receiver = Receiver(Point(9, 8))
 interferers = [Interferer([Point(7, 2), Point(8, 5), Point(5, 2)])]
 
 system = System(transmitter, receiver, interferers)
-#paths = system.get_paths(starting_number=100, max_reflections=10)
+paths = system.get_paths(starting_number=100, max_reflections=10)
 #paths_propagated = system.get_paths_propagated(starting_number=100, receiver_diameter=1.6, max_reflections=10)
 
 camera_position = Point(5, 5)
 camera_zoom = 0.1
 
-print(system.get_path(Vector(1, 0), max_reflections=10))
+p = system.get_path(Vector(1, 0), max_reflections=10)
+print(p)
 
 with cairo.ImageSurface(cairo.FORMAT_RGB24, 500, 500) as surface:
     context = cairo.Context(surface)
@@ -33,17 +34,30 @@ with cairo.ImageSurface(cairo.FORMAT_RGB24, 500, 500) as surface:
         context.set_line_width(0.05)
         context.set_line_join(cairo.LINE_JOIN_ROUND)
         context.stroke()
-    """
+
     for path in paths:
         for point in path[0]:
             context.line_to(point.x, point.y)
         if path[1] is not None:
-            context.rel_line_to(100 * cos(path[1]), 100 * sin(path[1]))
-        context.set_source_rgb(0.3, 0.3, 0.3)
+            normalized = path[1].normalized()
+            context.rel_line_to(100 * normalized.x, 100 * normalized.y)
+        context.set_source_rgb(1, 1, 1)
         context.set_line_width(0.02)
         context.set_line_join(cairo.LINE_JOIN_ROUND)
         context.stroke()
 
+
+
+        for point in p[0]:
+            context.line_to(point.x, point.y)
+        if p[1] is not None:
+            normalized = p[1].normalized()
+            context.rel_line_to(100 * normalized.x, 100 * normalized.y)
+        context.set_source_rgb(1, 1, 1)
+        context.set_line_width(0.02)
+        context.set_line_join(cairo.LINE_JOIN_ROUND)
+        context.stroke()
+    """    
     for path_propagated in paths_propagated:
         for point in path_propagated:
             context.line_to(point.x, point.y)
@@ -52,7 +66,6 @@ with cairo.ImageSurface(cairo.FORMAT_RGB24, 500, 500) as surface:
         context.set_line_join(cairo.LINE_JOIN_ROUND)
         context.stroke()
     """
-
     context.arc(system.transmitter.position.x, system.transmitter.position.y, 0.4, 0, tau)
     context.set_source_rgb(1, 0, 0)
     context.fill()
