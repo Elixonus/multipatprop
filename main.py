@@ -1,5 +1,6 @@
 from __future__ import annotations
-from math import cos, sin, tau
+from math import tau, pi
+from random import random
 import cairo
 from multipatprop import System, Transmitter, Receiver, Interferer, Point
 
@@ -7,11 +8,12 @@ from multipatprop import System, Transmitter, Receiver, Interferer, Point
 transmitter = Transmitter(Point(4, 3))
 receiver = Receiver(Point(6, 6))
 interferers = [Interferer([Point(7, 3), Point(8, 5), Point(5, 2)]),
-               Interferer([Point(2, 4), Point(4, 7), Point(4, 8)])]
+               Interferer([Point(2, 4), Point(4, 7), Point(4, 8)]),
+               Interferer.circle(Point(3, 5), 0.5, 100)]
 
 system = System(transmitter, receiver, interferers)
 paths = system.get_paths(starting_number=50, max_reflections=30)
-paths_propagated = system.get_paths_propagated(starting_number=1000, receiver_diameter=0.1, max_reflections=30)
+paths_propagated = system.get_paths_propagated(starting_number=100, receiver_diameter=0.1, max_reflections=30)
 
 camera_position = Point(5, 5)
 camera_zoom = 0.1

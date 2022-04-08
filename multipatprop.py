@@ -127,3 +127,12 @@ class Interferer:
                   Point(-length_half, -width_half),
                   Point(-length_half, width_half)]
         return cls.shape(points, position, 1, rotation)
+
+    @classmethod
+    def circle(cls, position: Point, radius: float, number_points: int) -> Interferer:
+        points = []
+        for p in range(number_points):
+            angle = tau * (p / number_points)
+            point = Point(radius * cos(angle), radius * sin(angle))
+            points.append(point)
+        return cls.shape(points, position, 1, 0)
