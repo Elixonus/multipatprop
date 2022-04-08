@@ -14,18 +14,16 @@ class System:
         self.receiver = receiver
         self.interferers = interferers
 
-    def get_paths_propagated(self, starting_number: int, receiver_diameter: float, max_reflections: int) -> list[list[Point2D]]:
+    def get_paths_propagated(self, starting_number: int, receiver_diameter: float, max_reflections: int) -> list[tuple[list[Point], Vector]]:
         paths = []
         for n in range(starting_number):
             angle = tau * (n / starting_number)
             path = self.get_path(Vector(cos(angle), sin(angle)), max_reflections)
             if path[1] is None:
                 continue
-            propagated_ray = Ray2D(path[0][-1], angle=path[1])
-            receiver_circle = Circle(self.receiver.position, receiver_diameter / 2)
-            if len(propagated_ray.intersection(receiver_circle)) > 0:
-                path[0].append(self.receiver.position)
-                paths.append(path[0])
+            propagated_ray = Ray(path[0][-1], path[1])
+            if propagated_ray.distance(self.receiver.position) < receiver_diameter / 2:
+                paths.append(path)
         return paths
 
 
