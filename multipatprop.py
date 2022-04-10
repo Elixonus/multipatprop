@@ -58,12 +58,15 @@ class System:
             points.append(closest_point)
             normal = Vector(-closest_segment.v.y, closest_segment.v.x).normalized()
             vector = vector.reflect(normal)
+
+            if ray.p1.distance(self.receiver.position) < ray.p1.distance(closest_point):
+                if ray.distance(self.receiver.position) < receiver_diameter / 2:
+                    points.append(self.receiver.position.copy())
+                    path = Path(points)
+                    return path
+
             ray = Ray(closest_point, vector)
             segment_ignore = closest_segment
-            if ray.distance(self.receiver.position) < receiver_diameter / 2:
-                points.append(self.receiver.position.copy())
-                path = Path(points)
-                return path
         return
 
 
@@ -147,16 +150,16 @@ class Multipath:
 class Path:
     points: list[Point]
     delay: float
-    attenuation: float
+    strength: float
 
     def __init__(self, points: list[Point]) -> None:
         self.points = points
         self.delay = 0
         for point_1, point_2 in pairwise(points):
             self.delay += point_1.distance(point_2) / 2.99792458e8
-        self.attenuation = 0
+        self.strength = 1
         for p in range(len(points) - 2):
-            self.attenuation *= 0.5
+            self.strength *= 0.9
 
     def __iter__(self) -> Iterable[Point]:
         for point in self.points:

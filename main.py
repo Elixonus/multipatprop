@@ -16,7 +16,7 @@ for x in range(-4, 4):
         interferers.append(interferer)
 
 system = System(transmitter, receiver, interferers)
-multipath = system.get_multipath(starting_number=1000, receiver_diameter=0.01, max_reflections=10)
+multipath = system.get_multipath(starting_number=1000, receiver_diameter=0.05, max_reflections=10)
 
 camera_position = Point(0, 0)
 camera_zoom = 0.1
@@ -40,7 +40,7 @@ with cairo.ImageSurface(cairo.FORMAT_RGB24, 1000, 1000) as surface:
     for path in multipath:
         for point in path:
             context.line_to(point.x, point.y)
-        context.set_source_rgba(0, 1, 0)
+        context.set_source_rgba(0, 1, 0, path.strength)
         context.set_line_width(0.02)
         context.set_line_join(cairo.LINE_JOIN_ROUND)
         context.set_line_cap(cairo.LINE_CAP_ROUND)
