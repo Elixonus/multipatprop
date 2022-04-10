@@ -17,7 +17,7 @@ class System:
         self.receiver = receiver
         self.interferers = interferers
 
-    def get_multipath(self, starting_number: int, receiver_diameter: float, max_reflections: int) -> list[list[Point]]:
+    def get_multipath(self, starting_number: int, receiver_diameter: float, max_reflections: int) -> Multipath:
         """Finds the path of a number of propagated transmissions distributed evenly in every direction.
         Each path returns with a vector indicating the last direction."""
         paths = []
@@ -27,12 +27,13 @@ class System:
             path = self.get_path(starting_vector, receiver_diameter, max_reflections)
             if path is not None:
                 paths.append(path)
-        return paths
+        multipath = Multipath(paths)
+        return multipath
 
-    def get_path(self, starting_vector: Vector, receiver_diameter: float, max_reflections: int) -> list[Point] | None:
+    def get_path(self, starting_vector: Vector, receiver_diameter: float, max_reflections: int) -> Path:
         """Finds the path of one transmission, returns with vector only if max_reflections is not reached."""
-        path = [self.transmitter.position.copy()]
-        ray = Ray(path[0], starting_vector)
+        points = [self.transmitter.position.copy()]
+        ray = Ray(points[0], starting_vector)
         vector = starting_vector
         segment_ignore = None
         for r in range(max_reflections):
@@ -53,13 +54,14 @@ class System:
 
             if not closest:
                 return
-            path.append(closest_point)
+            points.append(closest_point)
             normal = Vector(-closest_segment.v.y, closest_segment.v.x).normalized()
             vector = vector.reflect(normal)
             ray = Ray(closest_point, vector)
             segment_ignore = closest_segment
             if ray.distance(self.receiver.position) < receiver_diameter / 2:
-                path.append(self.receiver.position.copy())
+                points.append(self.receiver.position.copy())
+                path = Path(points)
                 return path
         return None
 
