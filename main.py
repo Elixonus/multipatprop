@@ -1,5 +1,5 @@
 from __future__ import annotations
-from math import tau, pi
+from math import pi, tau
 from random import random
 import cairo
 from multipatprop import System, Transmitter, Receiver, Interferer, Point
@@ -11,8 +11,20 @@ interferers = [Interferer([Point(7, 3), Point(8, 5), Point(5, 2)]),
                Interferer([Point(2, 4), Point(4, 7), Point(4, 8)]),
                Interferer.circle(Point(3, 5), 0.5, 100)]
 
+from edge import contours
+
+interferers = []
+for contour in contours:
+    points = []
+    for z in range(len(contour)):
+        points.append(Point(0.01 * contour[z][0][0], 0.01 * contour[z][0][1]))
+    interferer = Interferer(points)
+    interferers.append(interferer)
+
+print(interferers[0].points)
+
 system = System(transmitter, receiver, interferers)
-multipath = system.get_multipath(starting_number=1000, receiver_diameter=0.1, max_reflections=30)
+multipath = system.get_multipath(starting_number=10, receiver_diameter=0.1, max_reflections=30)
 
 camera_position = Point(5, 5)
 camera_zoom = 0.1
@@ -54,7 +66,7 @@ with cairo.ImageSurface(cairo.FORMAT_RGB24, 1000, 1000) as surface:
         context.set_line_cap(cairo.LINE_CAP_ROUND)
         context.stroke()
 
-    context.arc(system.transmitter.position.x, system.transmitter.position.y, 0.4, 0, tau)
+    context.arc(system.transmitter.position.x, system.transmitter.position.y, 0.1, 0, tau)
     context.set_source_rgb(1, 0, 0)
     context.fill_preserve()
     context.set_source_rgb(1, 1, 1)
@@ -63,7 +75,7 @@ with cairo.ImageSurface(cairo.FORMAT_RGB24, 1000, 1000) as surface:
     context.set_line_cap(cairo.LINE_CAP_ROUND)
     context.stroke()
 
-    context.arc(system.receiver.position.x, system.receiver.position.y, 0.4, 0, tau)
+    context.arc(system.receiver.position.x, system.receiver.position.y, 0.1, 0, tau)
     context.set_source_rgb(0, 0, 1)
     context.fill_preserve()
     context.set_source_rgb(1, 1, 1)
