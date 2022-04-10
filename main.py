@@ -13,7 +13,7 @@ interferers = [Interferer([Point(7, 3), Point(8, 5), Point(5, 2)]),
 
 system = System(transmitter, receiver, interferers)
 paths = system.get_paths(starting_number=50, max_reflections=30)
-paths_propagated = system.get_paths_propagated(starting_number=100, receiver_diameter=0.1, max_reflections=30)
+paths_propagated = system.get_paths_propagated(starting_number=3000, receiver_diameter=0.1, max_reflections=30)
 
 camera_position = Point(5, 5)
 camera_zoom = 0.1
