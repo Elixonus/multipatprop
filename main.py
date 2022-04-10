@@ -12,8 +12,7 @@ interferers = [Interferer([Point(7, 3), Point(8, 5), Point(5, 2)]),
                Interferer.circle(Point(3, 5), 0.5, 100)]
 
 system = System(transmitter, receiver, interferers)
-paths = system.get_paths(starting_number=50, max_reflections=30)
-paths_propagated = system.get_paths_propagated(starting_number=3000, receiver_diameter=0.1, max_reflections=30)
+paths = system.get_multipath(starting_number=50, receiver_diameter=0.1, max_reflections=30)
 
 camera_position = Point(5, 5)
 camera_zoom = 0.1
@@ -38,22 +37,10 @@ with cairo.ImageSurface(cairo.FORMAT_RGB24, 1000, 1000) as surface:
     context.translate(-camera_position.x, -camera_position.y)
 
 
-    for path in paths:
-        for point in path[0]:
-            context.line_to(point.x, point.y)
-        if path[1] is not None:
-            normalized = path[1].normalized()
-            context.rel_line_to(100 * normalized.x, 100 * normalized.y)
-        context.set_source_rgb(0.3, 0.3, 0.3)
-        context.set_line_width(0.02)
-        context.set_line_join(cairo.LINE_JOIN_ROUND)
-        context.set_line_cap(cairo.LINE_CAP_ROUND)
-        context.stroke()
 
-    for path_propagated in paths_propagated:
-        for point in path_propagated[0]:
+    for path in paths:
+        for point in path:
             context.line_to(point.x, point.y)
-        context.line_to(system.receiver.position.x, system.receiver.position.y)
         context.set_source_rgb(0, 1, 0)
         context.set_line_width(0.02)
         context.set_line_join(cairo.LINE_JOIN_ROUND)

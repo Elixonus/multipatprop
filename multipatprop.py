@@ -17,30 +17,19 @@ class System:
         self.receiver = receiver
         self.interferers = interferers
 
-    def get_paths_propagated(self, starting_number: int, receiver_diameter: float, max_reflections: int) -> list[tuple[list[Point], Vector]]:
+    def get_multipath(self, starting_number: int, receiver_diameter: float, max_reflections: int) -> list[list[Point]]:
         """Finds the path of a number of propagated transmissions distributed evenly in every direction.
         Each path returns with a vector indicating the last direction."""
         paths = []
         for n in range(starting_number):
-            angle = tau * (n / starting_number)
-            path = self.get_path(Vector(cos(angle), sin(angle)), max_reflections)
-            if path[1] is None:
-                continue
-            propagated_ray = Ray(path[0][-1], path[1])
-            if propagated_ray.distance(self.receiver.position) < receiver_diameter / 2:
+            starting_angle = tau * (n / starting_number)
+            starting_vector = Vector(cos(starting_angle), sin(starting_angle))
+            path = self.get_path(starting_vector, receiver_diameter, max_reflections)
+            if path is not None:
                 paths.append(path)
         return paths
 
-    def get_paths(self, starting_number: int, max_reflections: int) -> list[tuple[list[Point], Vector | None]]:
-        """Finds the path of a number of transmissions distributed evenly in every direction.
-        Each path returns with vector only if max_reflections is not reached."""
-        paths = []
-        for n in range(starting_number):
-            angle = tau * (n / starting_number)
-            paths.append(self.get_path(Vector(cos(angle), sin(angle)), max_reflections))
-        return paths
-
-    def get_path(self, starting_vector: Vector, max_reflections: int) -> tuple[list[Point], Vector | None]:
+    def get_path(self, starting_vector: Vector, receiver_diameter: float, max_reflections: int) -> list[Point] | None:
         """Finds the path of one transmission, returns with vector only if max_reflections is not reached."""
         path = [self.transmitter.position.copy()]
         ray = Ray(path[0], starting_vector)
@@ -63,13 +52,16 @@ class System:
                             closest_segment = segment
 
             if not closest:
-                return path, vector
+                return
             path.append(closest_point)
             normal = Vector(-closest_segment.v.y, closest_segment.v.x).normalized()
             vector = vector.reflect(normal)
             ray = Ray(closest_point, vector)
             segment_ignore = closest_segment
-        return path, None
+            if ray.distance(self.receiver.position) < receiver_diameter / 2:
+                path.append(self.receiver.position.copy())
+                return path
+        return None
 
 
 class Transmitter:
@@ -136,3 +128,25 @@ class Interferer:
             point = Point(radius * cos(angle), radius * sin(angle))
             points.append(point)
         return cls.shape(points, position, 1, 0)
+
+
+class Multipath:
+    paths: list[Path]
+
+    def __init__(self, paths: list[Path]) -> None:
+        self.paths = paths
+
+
+class Path:
+    points: list[Point]
+    delay: float
+    attenuation: float
+
+    def __init__(self, points: list[Point]) -> None:
+        self.points = points
+        self.delay = 0
+        for point_1, point_2 in pairwise(points):
+            self.delay += point_1.distance(point_2) / 2.99792458e8
+        self.attenuation = 0
+        for p in range(len(points) - 2):
+            self.attenuation *= 0.5
