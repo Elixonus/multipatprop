@@ -31,7 +31,7 @@ class System:
         multipath = Multipath(paths)
         return multipath
 
-    def get_path(self, starting_vector: Vector, receiver_diameter: float, max_reflections: int) -> Path:
+    def get_path(self, starting_vector: Vector, receiver_diameter: float, max_reflections: int) -> Path | None:
         """Finds the path of one transmission, returns with vector only if max_reflections is not reached."""
         points = [self.transmitter.position.copy()]
         ray = Ray(points[0], starting_vector)
@@ -64,7 +64,7 @@ class System:
                 points.append(self.receiver.position.copy())
                 path = Path(points)
                 return path
-        return None
+        return
 
 
 class Transmitter:
