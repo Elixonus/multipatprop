@@ -5,14 +5,14 @@ import cairo
 from multipatprop import System, Transmitter, Receiver, Interferer, Point
 
 
-transmitter = Transmitter(Point(4, 3))
+transmitter = Transmitter(Point(4, 6))
 receiver = Receiver(Point(6, 6))
 interferers = [Interferer([Point(7, 3), Point(8, 5), Point(5, 2)]),
                Interferer([Point(2, 4), Point(4, 7), Point(4, 8)]),
                Interferer.circle(Point(3, 5), 0.5, 100)]
 
 system = System(transmitter, receiver, interferers)
-paths = system.get_multipath(starting_number=50, receiver_diameter=0.1, max_reflections=30)
+multipath = system.get_multipath(starting_number=1000, receiver_diameter=0.1, max_reflections=30)
 
 camera_position = Point(5, 5)
 camera_zoom = 0.1
@@ -28,17 +28,12 @@ with cairo.ImageSurface(cairo.FORMAT_RGB24, 1000, 1000) as surface:
     context.set_source_rgb(0, 0, 0)
     context.rectangle(0, 0, 1, 1)
     context.fill()
-
-
-
     context.translate(0.5, 0.5)
     context.scale(1, -1)
     context.scale(camera_zoom, camera_zoom)
     context.translate(-camera_position.x, -camera_position.y)
 
-
-
-    for path in paths:
+    for path in multipath:
         for point in path:
             context.line_to(point.x, point.y)
         context.set_source_rgb(0, 1, 0)

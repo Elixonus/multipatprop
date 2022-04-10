@@ -3,6 +3,7 @@
 from __future__ import annotations
 from math import tau, cos, sin, atan2, hypot
 from itertools import pairwise
+from typing import Iterable
 from euclid import Point2 as Point, Vector2 as Vector, Ray2 as Ray, LineSegment2 as Segment
 
 
@@ -137,6 +138,10 @@ class Multipath:
 
     def __init__(self, paths: list[Path]) -> None:
         self.paths = paths
+    
+    def __iter__(self) -> Iterable[Path]:
+        for path in self.paths:
+            yield path
 
 
 class Path:
@@ -152,3 +157,7 @@ class Path:
         self.attenuation = 0
         for p in range(len(points) - 2):
             self.attenuation *= 0.5
+
+    def __iter__(self) -> Iterable[Point]:
+        for point in self.points:
+            yield point
