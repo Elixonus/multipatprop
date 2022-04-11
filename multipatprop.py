@@ -164,3 +164,35 @@ class Path:
     def __iter__(self) -> Iterable[Point]:
         for point in self.points:
             yield point
+
+    def signal(self, signal: DigitalSignal) -> DigitalSignal:
+        times = []
+        strengths = []
+        for time, strength in signal:
+            times.append(time + self.delay)
+            strengths.append(strength * self.strength)
+        signal = DigitalSignal(times, strengths)
+        return signal
+
+
+class DigitalSignal:
+    number: int
+    times: list[float]
+    strengths: list[float]
+
+    def __init__(self, times: list[float], strengths: list[float]) -> None:
+        self.number = len(times)
+        self.times = times
+        self.strengths = strengths
+
+    def __iter__(self) -> tuple[float, float]:
+        for n in range(self.number):
+            yield self.times[n], self.strengths[n]
+
+    def strength(self, time: float) -> float:
+        for s, (time_1, time_2) in enumerate(pairwise(self.times)):
+            if time_1 <= time <= time_2:
+                balance = (time - time_1) / (time_2 - time_1)
+                strength = (1 - balance) * self.strengths[s] + balance * self.strengths[s + 1]
+                return strength
+        return 0
