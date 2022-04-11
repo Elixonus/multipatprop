@@ -146,11 +146,9 @@ class Multipath:
         for path in self.paths:
             yield path
 
-    def signals(self, signal: DigitalSignal) -> list[DigitalSignal]:
-        signals = []
+    def signals(self, signal: DigitalSignal) -> Iterable[DigitalSignal]:
         for path in self.paths:
-            signals.append(path.signal(signal))
-        return signals
+            yield path.signal(signal)
 
 
 class Path:

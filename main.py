@@ -2,7 +2,9 @@ from __future__ import annotations
 from math import pi, tau
 from random import random, seed
 import cairo
-from multipatprop import System, Transmitter, Receiver, Interferer, Point
+import numpy as np
+import matplotlib.pyplot as plt
+from multipatprop import System, Transmitter, Receiver, Interferer, Point, DigitalSignal
 
 seed(1)
 
@@ -77,3 +79,21 @@ with cairo.ImageSurface(cairo.FORMAT_RGB24, 1000, 1000) as surface:
     context.stroke()
 
     surface.write_to_png("render.png")
+
+input_times = np.linspace(0, 30, 1000)
+input_strengths = np.cos(input_times)
+input_signal = DigitalSignal(input_times, input_strengths)
+output_signals = list(multipath.signals(input_signal))
+output_times = np.linspace(0, 30, 1000)
+output_strengths = []
+for input_time in input_times:
+    output_strength = 0
+    for output_signal in output_signals:
+        output_strength += output_signal.strength(input_time)
+    output_strengths.append(output_strength)
+output_signal = DigitalSignal(output_times, output_strengths)
+
+fig, ax = plt.subplots()
+ax.plot(input_signal.times, input_signal.strengths)
+ax.plot(output_signal.times, output_signal.strengths)
+plt.show()
