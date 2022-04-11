@@ -58,18 +58,23 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
 
     delays = [path.delay for path in multipath]
     attenuations = [path.attenuation for path in multipath]
-    degrees = 10
+    degrees = 3
     coefficients = np.polyfit(delays, attenuations, deg=degrees)
     x = np.linspace(min(delays), max(delays), 100)
     y = np.zeros(100)
     for a in range(100):
         for d in range(degrees + 1):
             y[a] += coefficients[-d - 1] * x[a] ** d
-
     fig, ax = plt.subplots()
     ax.scatter(delays, attenuations)
     ax.plot(x, y)
     ax.set_title("Delay and attenuation of multiple propagating wave paths")
     ax.set_xlabel("Delay (seconds)")
     ax.set_ylabel("Attenuation factor")
+
+    fig, ax = plt.subplots()
+    starting_angles = [path.starting_angle for path in multipath]
+    ax = fig.add_subplot(projection="polar")
+    ax.scatter(starting_angles, attenuations)
+
     plt.show()
