@@ -127,6 +127,16 @@ class Interferer:
         return cls.shape(points, position, 1, rotation)
 
     @classmethod
+    def polygon(cls, position: Point, diameter: float, number_sides: int, rotation: float) -> Interferer:
+        radius = diameter / 2
+        points = []
+        for p in range(number_sides):
+            angle = tau * (p / number_sides)
+            point = Point(radius * cos(angle), radius * sin(angle))
+            points.append(point)
+        return cls.shape(points, position, 1, rotation)
+
+    @classmethod
     def circle(cls, position: Point, radius: float, number_points: int) -> Interferer:
         points = []
         for p in range(number_points):

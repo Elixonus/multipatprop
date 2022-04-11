@@ -28,8 +28,6 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
             for point in interferer.points:
                 context.line_to(point.x, point.y)
             context.close_path()
-            context.set_source_rgb(0, 0, 0)
-            context.fill_preserve()
             context.set_source_rgb(1, 1, 1)
             context.set_line_width(0.05 * ui_size)
             context.set_line_join(cairo.LINE_JOIN_ROUND)
@@ -58,6 +56,9 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
 
     delays = [path.delay for path in multipath]
     attenuations = [path.attenuation for path in multipath]
+
+
+
     degrees = 3
     coefficients = np.polyfit(delays, attenuations, deg=degrees)
     x = np.linspace(min(delays), max(delays), 100)
