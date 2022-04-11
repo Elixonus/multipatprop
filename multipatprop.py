@@ -153,17 +153,18 @@ class Multipath:
 
 class Path:
     points: list[Point]
+    attenuation: float
     delay: float
-    strength: float
 
     def __init__(self, points: list[Point]) -> None:
         self.points = points
         self.delay = 0
         for point_1, point_2 in pairwise(points):
             self.delay += point_1.distance(point_2)
-        self.strength = 1
+        factor = 1
         for p in range(len(points) - 2):
-            self.strength *= 0.8
+            factor *= 0.9
+        self.attenuation = 1 - factor
 
     def __iter__(self) -> Iterable[Point]:
         for point in self.points:
@@ -174,7 +175,7 @@ class Path:
         strengths = []
         for time, strength in signal:
             times.append(time + self.delay)
-            strengths.append(strength * self.strength)
+            strengths.append(strength * self.attenuation)
         signal = DigitalSignal(times, strengths)
         return signal
 

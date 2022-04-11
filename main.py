@@ -6,9 +6,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from multipatprop import System, Transmitter, Receiver, Interferer, Point, DigitalSignal
 
-seed(1)
+seed(2)
 
-transmitter = Transmitter(Point(-2.5, -2.5))
+transmitter = Transmitter(Point(-2.5, -2))
 receiver = Receiver(Point(-1.5, -1.5))
 interferers = []
 
@@ -18,89 +18,12 @@ for x in range(-4, 4):
         interferers.append(interferer)
 
 system = System(transmitter, receiver, interferers)
-multipath = system.get_multipath(starting_number=3000, receiver_diameter=0.05, max_reflections=10)
+multipath = system.get_multipath(starting_number=5000, receiver_diameter=0.1, max_reflections=10)
 
 camera_position = Point(0, 0)
 camera_zoom = 0.1
 
 
-svg = cairo.SVGSurface("example.svg", 200, 200)
 
-
-with cairo.ImageSurface(cairo.FORMAT_RGB24, 1000, 1000) as surface:
-    context = cairo.Context(surface)
-    context.scale(1000, 1000)
-
-    context.set_source_rgb(0, 0, 0)
-    context.rectangle(0, 0, 1, 1)
-    context.fill()
-    context.translate(0.5, 0.5)
-    context.scale(1, -1)
-    context.scale(camera_zoom, camera_zoom)
-    context.translate(-camera_position.x, -camera_position.y)
-
-    for path in multipath:
-        for point in path:
-            context.line_to(point.x, point.y)
-        context.set_source_rgba(0, 1, 0, path.strength)
-        context.set_line_width(0.02)
-        context.set_line_join(cairo.LINE_JOIN_ROUND)
-        context.set_line_cap(cairo.LINE_CAP_ROUND)
-        context.stroke()
-
-    for interferer in system.interferers:
-        for point in interferer.points:
-            context.line_to(point.x, point.y)
-        context.close_path()
-        context.set_source_rgb(0, 0, 0)
-        context.fill_preserve()
-        context.set_source_rgb(1, 1, 1)
-        context.set_line_width(0.05)
-        context.set_line_join(cairo.LINE_JOIN_ROUND)
-        context.set_line_cap(cairo.LINE_CAP_ROUND)
-        context.stroke()
-
-    context.arc(system.transmitter.position.x, system.transmitter.position.y, 0.1, 0, tau)
-    context.set_source_rgb(1, 0, 0)
-    context.fill_preserve()
-    context.set_source_rgb(1, 1, 1)
-    context.set_line_width(0.05)
-    context.set_line_join(cairo.LINE_JOIN_ROUND)
-    context.set_line_cap(cairo.LINE_CAP_ROUND)
-    context.stroke()
-
-    context.arc(system.receiver.position.x, system.receiver.position.y, 0.1, 0, tau)
-    context.set_source_rgb(0, 0, 1)
-    context.fill_preserve()
-    context.set_source_rgb(1, 1, 1)
-    context.set_line_width(0.05)
-    context.set_line_join(cairo.LINE_JOIN_ROUND)
-    context.set_line_cap(cairo.LINE_CAP_ROUND)
-    context.stroke()
-
-    surface.write_to_png("render.png")
-
-input_times = np.linspace(0, 30, 1000)
-input_strengths = np.zeros(1000)
-
-for i in range(1000):
-    if i % 100 <= 50:
-        input_strengths[i] = 1
-    else:
-        input_strengths[i] = 0
-
-input_signal = DigitalSignal(input_times, input_strengths)
-output_signals = list(multipath.signals(input_signal))
-output_times = np.linspace(0, 30, 1000)
-output_strengths = []
-for input_time in input_times:
-    output_strength = 0
-    for output_signal in output_signals:
-        output_strength += output_signal.strength(input_time)
-    output_strengths.append(output_strength / 10)
-output_signal = DigitalSignal(output_times, output_strengths)
-
-fig, ax = plt.subplots()
-ax.plot(input_signal.times, input_signal.strengths)
-ax.plot(output_signal.times, output_signal.strengths)
-plt.show()
+from render import render
+render(system, multipath, camera_position, camera_zoom, ui_size=1)
