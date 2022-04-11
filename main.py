@@ -18,7 +18,7 @@ for x in range(-4, 4):
         interferers.append(interferer)
 
 system = System(transmitter, receiver, interferers)
-multipath = system.get_multipath(starting_number=5000, receiver_diameter=0.1, max_reflections=10)
+multipath = system.get_multipath(starting_number=1000, receiver_diameter=0.1, max_reflections=10)
 
 camera_position = Point(0, 0)
 camera_zoom = 0.1

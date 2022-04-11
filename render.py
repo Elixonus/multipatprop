@@ -72,9 +72,9 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
     ax.set_xlabel("Delay (seconds)")
     ax.set_ylabel("Attenuation factor")
 
-    fig, ax = plt.subplots()
     starting_angles = [path.starting_angle for path in multipath]
+    fig = plt.figure()
     ax = fig.add_subplot(projection="polar")
     ax.scatter(starting_angles, attenuations)
-
+    ax.set_title("Path starting angle and attenuation factor")
     plt.show()
