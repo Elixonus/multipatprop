@@ -160,10 +160,10 @@ class Path:
         self.points = points
         self.delay = 0
         for point_1, point_2 in pairwise(points):
-            self.delay += point_1.distance(point_2) / 2.99792458e8
+            self.delay += point_1.distance(point_2)
         self.strength = 1
         for p in range(len(points) - 2):
-            self.strength *= 0.9
+            self.strength *= 0.8
 
     def __iter__(self) -> Iterable[Point]:
         for point in self.points:

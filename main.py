@@ -9,7 +9,7 @@ from multipatprop import System, Transmitter, Receiver, Interferer, Point, Digit
 seed(1)
 
 transmitter = Transmitter(Point(-2.5, -2.5))
-receiver = Receiver(Point(1.5, 0.5))
+receiver = Receiver(Point(-1.5, -1.5))
 interferers = []
 
 for x in range(-4, 4):
@@ -18,7 +18,7 @@ for x in range(-4, 4):
         interferers.append(interferer)
 
 system = System(transmitter, receiver, interferers)
-multipath = system.get_multipath(starting_number=1000, receiver_diameter=0.05, max_reflections=10)
+multipath = system.get_multipath(starting_number=3000, receiver_diameter=0.05, max_reflections=10)
 
 camera_position = Point(0, 0)
 camera_zoom = 0.1
@@ -81,7 +81,14 @@ with cairo.ImageSurface(cairo.FORMAT_RGB24, 1000, 1000) as surface:
     surface.write_to_png("render.png")
 
 input_times = np.linspace(0, 30, 1000)
-input_strengths = np.cos(input_times)
+input_strengths = np.zeros(1000)
+
+for i in range(1000):
+    if i % 100 <= 50:
+        input_strengths[i] = 1
+    else:
+        input_strengths[i] = 0
+
 input_signal = DigitalSignal(input_times, input_strengths)
 output_signals = list(multipath.signals(input_signal))
 output_times = np.linspace(0, 30, 1000)
@@ -90,7 +97,7 @@ for input_time in input_times:
     output_strength = 0
     for output_signal in output_signals:
         output_strength += output_signal.strength(input_time)
-    output_strengths.append(output_strength)
+    output_strengths.append(output_strength / 10)
 output_signal = DigitalSignal(output_times, output_strengths)
 
 fig, ax = plt.subplots()
