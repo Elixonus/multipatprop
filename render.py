@@ -1,7 +1,9 @@
 from math import tau, atan2
+from itertools import pairwise
 import cairo
 import matplotlib.pyplot as plt
-from multipatprop import System, Multipath, Point
+import numpy as np
+from multipatprop import System, Multipath, Point, Segment
 
 
 def render(system: System, multipath: Multipath, camera_position: Point, camera_zoom: float, ui_size: float, bins: int, red_factor: float) -> None:
@@ -63,11 +65,3 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
     ax.set_xlabel("Time")
     ax.set_ylabel("Signal Energy")
     ax.set_title("Energy function of propagated waves")
-
-    data = [[0 for _ in range(100)] for _ in range(100)]
-
-    for path in multipath:
-
-
-
-    plt.show()

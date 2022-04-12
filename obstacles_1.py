@@ -6,7 +6,7 @@ from render import render
 
 seed(1)
 
-transmitter = Transmitter(Point(-3.5, -3))
+transmitter = Transmitter(Point(-3.5, 3))
 receiver = Receiver(Point(1.5, 1.5))
 interferers = [Interferer.square(Point(-2, 2), 2, pi/16),
                Interferer.square(Point(0, 0), 9, 0),
