@@ -34,6 +34,7 @@ class System:
     def get_path(self, starting_vector: Vector, receiver_diameter: float, max_reflections: int) -> Path | None:
         """Finds the path of one transmission, returns with vector only if max_reflections is not reached."""
         points = [self.transmitter.position.copy()]
+        hits = []
         ray = Ray(points[0], starting_vector)
         vector = starting_vector
         segment_ignore = None
@@ -41,6 +42,7 @@ class System:
             closest = False
             closest_point = None
             closest_segment = None
+            closest_interferer = None
             for interferer in self.interferers:
                 for s, segment in enumerate(interferer.segments):
                     if segment is segment_ignore:
@@ -52,17 +54,19 @@ class System:
                             closest = True
                             closest_point = point
                             closest_segment = segment
+                            closest_interferer = interferer
 
             if not closest:
                 return
             points.append(closest_point)
+            hits.append(closest_interferer)
             normal = Vector(-closest_segment.v.y, closest_segment.v.x).normalized()
             vector = vector.reflect(normal)
 
             if ray.p1.distance(self.receiver.position) < ray.p1.distance(closest_point):
                 if ray.distance(self.receiver.position) < receiver_diameter / 2:
                     points.append(self.receiver.position.copy())
-                    path = Path(points)
+                    path = Path(points, hits)
                     return path
 
             ray = Ray(closest_point, vector)
@@ -165,8 +169,9 @@ class Path:
     points: list[Point]
     power: float
     delay: float
+    hits: list[Interferer]
 
-    def __init__(self, points: list[Point]) -> None:
+    def __init__(self, points: list[Point], hits: list[Interferer]) -> None:
         self.points = points
         self.delay = 0
         for point_1, point_2 in pairwise(points):
@@ -174,6 +179,7 @@ class Path:
         self.power = 1
         for p in range(len(points) - 2):
             self.power *= 0.9
+        self.hits = hits
 
     def __iter__(self) -> Iterable[Point]:
         for point in self.points:
