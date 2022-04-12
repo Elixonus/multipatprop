@@ -163,20 +163,17 @@ class Multipath:
 
 class Path:
     points: list[Point]
-    attenuation: float
+    power: float
     delay: float
-    starting_angle: float
 
     def __init__(self, points: list[Point]) -> None:
         self.points = points
         self.delay = 0
         for point_1, point_2 in pairwise(points):
             self.delay += point_1.distance(point_2) / 2.99792458e8
-        factor = 1
+        self.power = 1
         for p in range(len(points) - 2):
-            factor *= 0.9
-        self.attenuation = 1 - factor
-        self.starting_angle = atan2(self.points[1].y - self.points[0].y, self.points[1].x - self.points[0].x)
+            self.power *= 0.9
 
     def __iter__(self) -> Iterable[Point]:
         for point in self.points:

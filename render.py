@@ -1,4 +1,4 @@
-from math import tau
+from math import tau, atan2
 import cairo
 import matplotlib.pyplot as plt
 import numpy as np
@@ -18,8 +18,8 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
         for path in multipath:
             for point in path:
                 context.line_to(point.x, point.y)
-            context.set_source_rgba(0, 1, 0, path.attenuation)
-            context.set_line_width(0.02 * ui_size)
+            context.set_source_rgba(0, 1, 0, 1 - path.power)
+            context.set_line_width(0.01 * ui_size)
             context.set_line_join(cairo.LINE_JOIN_ROUND)
             context.set_line_cap(cairo.LINE_CAP_ROUND)
             context.stroke()
@@ -54,28 +54,8 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
 
         surface.write_to_png("render.png")
 
-    delays = [path.delay for path in multipath]
-    attenuations = [path.attenuation for path in multipath]
 
 
-
-    degrees = 3
-    coefficients = np.polyfit(delays, attenuations, deg=degrees)
-    x = np.linspace(min(delays), max(delays), 100)
-    y = np.zeros(100)
-    for a in range(100):
-        for d in range(degrees + 1):
-            y[a] += coefficients[-d - 1] * x[a] ** d
     fig, ax = plt.subplots()
-    ax.scatter(delays, attenuations)
-    ax.plot(x, y)
-    ax.set_title("Delay and attenuation of multiple propagating wave paths")
-    ax.set_xlabel("Delay (seconds)")
-    ax.set_ylabel("Attenuation factor")
-
-    starting_angles = [path.starting_angle for path in multipath]
-    fig = plt.figure()
-    ax = fig.add_subplot(projection="polar")
-    ax.scatter(starting_angles, attenuations)
-    ax.set_title("Path starting angle and attenuation factor")
+    ax.hist([path.delay for path in multipath], weights=[path.power for path in multipath], bins=20)
     plt.show()
