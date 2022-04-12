@@ -26,7 +26,7 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
             for point in path:
                 context.line_to(point.x, point.y)
             context.set_source_rgba(0, 1, 0, 1 - path.power)
-            context.set_line_width(0.01 * ui_size)
+            context.set_line_width(0.02 * ui_size)
             context.set_line_join(cairo.LINE_JOIN_ROUND)
             context.set_line_cap(cairo.LINE_CAP_ROUND)
             context.stroke()
@@ -65,3 +65,4 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
     ax.set_xlabel("Time")
     ax.set_ylabel("Signal Energy")
     ax.set_title("Energy function of propagated waves")
+    plt.show()
