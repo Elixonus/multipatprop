@@ -18,4 +18,4 @@ system = System(transmitter, receiver, interferers)
 multipath = system.get_multipath(starting_number=1000, receiver_diameter=0.1, max_reflections=10)
 camera_position = Point(0, 0)
 camera_zoom = 0.1
-render(system, multipath, camera_position, camera_zoom, ui_size=1, bins=30, red_factor=2)
+render(system, multipath, camera_position, camera_zoom, ui_size=1, bins=15, red_factor=2)

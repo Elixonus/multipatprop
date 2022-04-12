@@ -64,6 +64,9 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
     ax.set_ylabel("Signal Energy")
     ax.set_title("Energy function of propagated waves")
 
+    data = [[0 for _ in range(100)] for _ in range(100)]
+
+    for path in multipath:
 
 
 
