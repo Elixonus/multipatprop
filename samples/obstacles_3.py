@@ -13,7 +13,7 @@ interferers = [Interferer.square(Point(0, 0), 9, 0),
                Interferer.rectangle(Point(-3, 2), length=2, width=1, rotation=-pi / 4),
                Interferer.rectangle(Point(3, -2), length=2, width=1, rotation=-pi / 4)]
 system = System(transmitter, receiver, interferers)
-multipath = system.get_multipath(starting_number=500, receiver_diameter=0.1, max_reflections=10)
+multipath = system.get_multipath(starting_number=500, receiver_diameter=0.1, max_reflections=50)
 camera_position = Point(0, 0)
 camera_zoom = 0.1
-render(system, multipath, camera_position, camera_zoom, ui_size=1, bins=15, red_factor=3)
+render(system, multipath, camera_position, camera_zoom, ui_size=1, bins=15, red_factor=0.2)
