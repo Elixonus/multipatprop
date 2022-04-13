@@ -19,7 +19,7 @@ class System:
         self.receiver = receiver
         self.interferers = interferers
 
-    def get_multipath(self, starting_number: int, receiver_diameter: float, max_reflections: int) -> Multipath:
+    def get_multipath(self, starting_number: int, receiver_diameter: float, max_reflections: int, power_multiplier: float = 0.9) -> Multipath:
         """Finds the path of a number of propagated transmissions distributed evenly in every direction.
         Each path returns with a vector indicating the last direction."""
         paths = []
@@ -32,7 +32,7 @@ class System:
         multipath = Multipath(paths)
         return multipath
 
-    def get_path(self, starting_vector: Vector, receiver_diameter: float, max_reflections: int) -> Path | None:
+    def get_path(self, starting_vector: Vector, receiver_diameter: float, max_reflections: int, power_multiplier: float = 0.9) -> Path | None:
         """Finds the path of one transmission, returns with vector only if max_reflections is not reached."""
         points = [self.transmitter.position.copy()]
         hits = []
@@ -67,7 +67,7 @@ class System:
             if ray.p1.distance(self.receiver.position) < ray.p1.distance(closest_point):
                 if ray.distance(self.receiver.position) < receiver_diameter / 2:
                     points.append(self.receiver.position.copy())
-                    path = Path(points, hits)
+                    path = Path(points, hits, power_multiplier)
                     return path
 
             ray = Ray(closest_point, vector)
@@ -189,14 +189,14 @@ class Path:
     delay: float
     hits: list[Interferer]
 
-    def __init__(self, points: list[Point], hits: list[Interferer]) -> None:
+    def __init__(self, points: list[Point], hits: list[Interferer], power_multiplier: float = 0.9) -> None:
         self.points = points
         self.delay = 0
         for point_1, point_2 in pairwise(points):
             self.delay += point_1.distance(point_2) / 2.99792458e8
         self.power = 1
         for p in range(len(points) - 2):
-            self.power *= 0.9
+            self.power *= power_multiplier
         self.hits = hits
 
     def __iter__(self) -> Iterable[Point]:
