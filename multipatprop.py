@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 from math import tau, cos, sin, atan2, hypot
+from random import random
 from itertools import pairwise
 from typing import Iterable
 from euclid import Point2 as Point, Vector2 as Vector, Ray2 as Ray, LineSegment2 as Segment
@@ -148,6 +149,23 @@ class Interferer:
             point = Point(radius * cos(angle), radius * sin(angle))
             points.append(point)
         return cls.shape(points, position, 1, 0)
+
+    @classmethod
+    def blob(cls, position: Point, average_radius: float, number_points: int, smoothing_factor: float = 0, smoothing_iterations: int = 0) -> Interferer:
+        points = []
+        for p in range(number_points):
+            angle = tau * (p / number_points)
+            radius = average_radius * (0.75 + random() / 2)
+            point = Point(radius * cos(angle), radius * sin(angle))
+            points.append(point)
+        for s in range(smoothing_iterations):
+            for p in range(number_points):
+                point_left = points[p]
+                point_middle = points[(p + 1) % number_points]
+                point_right = points[(p + 2) % number_points]
+                point_target = Point((point_left.x + point_right.x) / 2, (point_left.y + point_right.y) / 2)
+                points[(p + 1) % number_points] = Point(point_middle.x * (1 - smoothing_factor) + point_target.x * smoothing_factor, point_middle.y * (1 - smoothing_factor) + point_target.y * smoothing_factor)
+        return cls.shape(points, position, 1, tau * random())
 
 
 class Multipath:
