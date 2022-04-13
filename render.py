@@ -65,4 +65,21 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
     ax.set_xlabel("Time")
     ax.set_ylabel("Signal Energy")
     ax.set_title("Energy function of propagated waves")
+
+    camera_minimum = Point(camera_position.x - 0.5 / camera_zoom, camera_position.y - 0.5 / camera_zoom)
+    camera_maximum = Point(camera_position.x + 0.5 / camera_zoom, camera_position.y + 0.5 / camera_zoom)
+    densities = np.zeros((100, 100))
+    for ix, x in enumerate(np.linspace(camera_minimum.x, camera_maximum.x, 100)):
+        for iy, y in enumerate(np.linspace(camera_minimum.y, camera_maximum.y, 100)):
+            density = 0
+            for path in multipath:
+                for point_1, point_2 in pairwise(path):
+                    segment = Segment(point_1, point_2)
+                    density += path.power / Point(x, y).distance(segment)
+            densities[iy][ix] = density
+    densities_flat = densities.flatten()
+    density_low = np.percentile(densities_flat, 5)
+    density_high = np.percentile(densities_flat, 95)
+    fig, ax = plt.subplots()
+    ax.imshow(densities, vmin=density_low, vmax=density_high, origin="lower")
     plt.show()
