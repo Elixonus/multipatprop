@@ -72,17 +72,6 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
                     counter += 1
                 counter += 1
 
-    fig, ax = plt.subplots()
-    ax.imshow(image)
-    ax.set_title("Propagated paths from transmitter to receiver")
-
-    print("Calculating time-energy function...")
-    fig, ax = plt.subplots()
-    ax.hist([path.delay for path in multipath], weights=[path.power for path in multipath], bins=bins, rwidth=0.9)
-    ax.set_xlabel("Time")
-    ax.set_ylabel("Signal Energy")
-    ax.set_title("Energy function of propagated waves")
-
     print("Making path density visualization...")
     camera_minimum = Point(camera_position.x - 0.5 / camera_zoom, camera_position.y - 0.5 / camera_zoom)
     camera_maximum = Point(camera_position.x + 0.5 / camera_zoom, camera_position.y + 0.5 / camera_zoom)
@@ -91,19 +80,30 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
         return (round((100 - 1) * (p.y - camera_minimum.y) / (camera_maximum.y - camera_minimum.y)),
                 round((100 - 1) * (p.x - camera_minimum.x) / (camera_maximum.x - camera_minimum.x)))
 
-    image = np.zeros((100, 100))
+    density = np.zeros((100, 100))
     for path in multipath:
         for point_1, point_2 in pairwise(path):
             r1, c1 = r_transform(point_1)
             r2, c2 = r_transform(point_2)
             rr, cc = line(r1, c1, r2, c2)
-            image[rr, cc] += path.power
-    image_flat = image.flatten()
-    image_low = np.percentile(image_flat, 5)
-    image_high = np.percentile(image_flat, 95)
+            density[rr, cc] += path.power
+    density_flat = density.flatten()
+    density_low = np.percentile(density_flat, 5)
+    density_high = np.percentile(density_flat, 95)
+
     fig, ax = plt.subplots()
-    ax.imshow(image, vmin=image_low, vmax=image_high, origin="lower", cmap="inferno", interpolation="gaussian")
+    ax.imshow(density, vmin=density_low, vmax=density_high, origin="lower", cmap="inferno", interpolation="gaussian")
     ax.set_title("Relative radiation of propagated paths")
+
+    fig, ax = plt.subplots()
+    ax.hist([path.delay for path in multipath], weights=[path.power for path in multipath], bins=bins, rwidth=0.9)
+    ax.set_xlabel("Time")
+    ax.set_ylabel("Signal Energy")
+    ax.set_title("Energy function of propagated waves")
+
+    fig, ax = plt.subplots()
+    ax.imshow(image)
+    ax.set_title("Propagated paths from transmitter to receiver")
 
     print("Done, displaying results...")
     sleep(1)
