@@ -23,7 +23,7 @@ for x in range(8):
 
 
 system = System(transmitter, receiver, interferers)
-multipath = system.get_multipath(starting_number=1000, receiver_diameter=0.2, max_reflections=30, power_multiplier=0.95)
+multipath = system.get_multipath(starting_number=1000, receiver_diameter=0.2, max_reflections=30, power_multiplier=0.9)
 camera_position = Point(0, 0)
 camera_zoom = 0.1
 render(system, multipath, camera_position, camera_zoom, ui_size=1, bins=30, red_factor=1)

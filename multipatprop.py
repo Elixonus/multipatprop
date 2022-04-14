@@ -19,7 +19,7 @@ class System:
         self.receiver = receiver
         self.interferers = interferers
 
-    def get_multipath(self, starting_number: int, receiver_diameter: float, max_reflections: int) -> Multipath:
+    def get_multipath(self, starting_number: int, receiver_diameter: float, max_reflections: int, power_multiplier: float = 0.9) -> Multipath:
         """Finds the path of a number of propagated transmissions distributed evenly in every direction.
         Each path returns with a vector indicating the last direction."""
         print("Calculating propagated paths...")
@@ -27,7 +27,7 @@ class System:
         for n in range(starting_number):
             starting_angle = tau * (n / starting_number)
             starting_vector = Vector(cos(starting_angle), sin(starting_angle))
-            path = self.get_path(starting_vector, receiver_diameter, max_reflections)
+            path = self.get_path(starting_vector, receiver_diameter, max_reflections, power_multiplier)
             if path is not None:
                 paths.append(path)
         multipath = Multipath(paths)
