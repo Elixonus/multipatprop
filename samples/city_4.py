@@ -2,7 +2,7 @@ from __future__ import annotations
 from math import pi, tau, cos, sin
 from random import seed, random
 from multipatprop import System, Transmitter, Receiver, Interferer, Point, DigitalSignal
-from render import render
+from output import render
 
 seed(114230)
 

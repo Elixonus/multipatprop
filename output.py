@@ -1,5 +1,6 @@
 from math import tau
 from itertools import pairwise
+from time import sleep
 import cairo
 import matplotlib.pyplot as plt
 import numpy as np
@@ -15,6 +16,7 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
             hit.hits += 1
 
     with cairo.ImageSurface(cairo.FORMAT_RGB24, 1000, 1000) as surface:
+        print("Rendering paths...")
         context = cairo.Context(surface)
         context.scale(1000, 1000)
         context.fill()
@@ -74,18 +76,20 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
     ax.imshow(image)
     ax.set_title("Propagated paths from transmitter to receiver")
 
+    print("Calculating time-energy function...")
     fig, ax = plt.subplots()
     ax.hist([path.delay for path in multipath], weights=[path.power for path in multipath], bins=bins, rwidth=0.9)
     ax.set_xlabel("Time")
     ax.set_ylabel("Signal Energy")
     ax.set_title("Energy function of propagated waves")
 
+    print("Making path density visualization...")
     camera_minimum = Point(camera_position.x - 0.5 / camera_zoom, camera_position.y - 0.5 / camera_zoom)
     camera_maximum = Point(camera_position.x + 0.5 / camera_zoom, camera_position.y + 0.5 / camera_zoom)
 
-    def r_transform(point: Point) -> tuple[int, int]:
-        return (round((100 - 1) * (point.y - camera_minimum.y) / (camera_maximum.y - camera_minimum.y)),
-                round((100 - 1) * (point.x - camera_minimum.x) / (camera_maximum.x - camera_minimum.x)))
+    def r_transform(p: Point) -> tuple[int, int]:
+        return (round((100 - 1) * (p.y - camera_minimum.y) / (camera_maximum.y - camera_minimum.y)),
+                round((100 - 1) * (p.x - camera_minimum.x) / (camera_maximum.x - camera_minimum.x)))
 
     image = np.zeros((100, 100))
     for path in multipath:
@@ -100,4 +104,12 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
     fig, ax = plt.subplots()
     ax.imshow(image, vmin=image_low, vmax=image_high, origin="lower", cmap="inferno", interpolation="gaussian")
     ax.set_title("Relative radiation of propagated paths")
+
+    print("Done, displaying results...")
+    sleep(1)
     plt.show()
+
+
+if __name__ == "__main__":
+    print("This file is a utility program that does not work on its own.")
+    sleep(5)

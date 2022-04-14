@@ -19,9 +19,10 @@ class System:
         self.receiver = receiver
         self.interferers = interferers
 
-    def get_multipath(self, starting_number: int, receiver_diameter: float, max_reflections: int, power_multiplier: float = 0.9) -> Multipath:
+    def get_multipath(self, starting_number: int, receiver_diameter: float, max_reflections: int) -> Multipath:
         """Finds the path of a number of propagated transmissions distributed evenly in every direction.
         Each path returns with a vector indicating the last direction."""
+        print("Calculating propagated paths...")
         paths = []
         for n in range(starting_number):
             starting_angle = tau * (n / starting_number)
@@ -95,6 +96,7 @@ class Interferer:
     """An obstruction between the transmitter and receiver that reflects incoming light."""
     points: list[Point]
     segments: list[Segment]
+    hits: int
 
     def __init__(self, points: list[Point]) -> None:
         self.points = points
@@ -102,6 +104,7 @@ class Interferer:
         for point_1, point_2 in pairwise(points + [points[0]]):
             segment = Segment(point_1, point_2)
             self.segments.append(segment)
+        self.hits = 0
 
     @classmethod
     def shape(cls, points: list[Point], position: Point, scale: float, rotation: float) -> Interferer:
@@ -208,7 +211,7 @@ class Path:
         strengths = []
         for time, strength in signal:
             times.append(time + self.delay)
-            strengths.append(strength * self.attenuation)
+            strengths.append(strength * self.power)
         signal = DigitalSignal(times, strengths)
         return signal
 
@@ -234,3 +237,9 @@ class DigitalSignal:
                 strength = (1 - balance) * self.strengths[s] + balance * self.strengths[s + 1]
                 return strength
         return 0
+
+
+if __name__ == "__main__":
+    from time import sleep
+    print("This file is just a library, does not work on its own.")
+    sleep(5)

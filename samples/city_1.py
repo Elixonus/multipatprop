@@ -3,7 +3,7 @@ from math import pi
 from random import seed, random, randint
 from copy import deepcopy
 from multipatprop import System, Transmitter, Receiver, Interferer, Point, DigitalSignal
-from render import render
+from output import render
 
 seed(1123)
 
