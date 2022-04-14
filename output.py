@@ -92,13 +92,14 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
     density_high = np.percentile(density_flat, 95)
 
     fig, ax = plt.subplots()
-    ax.imshow(density, vmin=density_low, vmax=density_high, origin="lower", cmap="inferno", interpolation="gaussian")
+    im = ax.imshow(density, vmin=density_low, vmax=density_high, origin="lower", cmap="inferno", interpolation="gaussian")
+    plt.colorbar(im)
     ax.set_title("Relative radiation of propagated paths")
 
     fig, ax = plt.subplots()
     ax.hist([path.delay for path in multipath], weights=[path.power for path in multipath], bins=bins, rwidth=0.9)
     ax.set_xlabel("Time")
-    ax.set_ylabel("Signal Energy")
+    ax.set_ylabel("Relative Signal Energy")
     ax.set_title("Energy function of propagated waves")
 
     fig, ax = plt.subplots()
