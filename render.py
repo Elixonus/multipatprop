@@ -1,11 +1,10 @@
-from math import tau, atan2
+from math import tau
 from itertools import pairwise
 import cairo
 import matplotlib.pyplot as plt
 import numpy as np
 from skimage.draw import line
-from skimage.filters import gaussian
-from multipatprop import System, Multipath, Point, Segment
+from multipatprop import System, Multipath, Point
 
 
 def render(system: System, multipath: Multipath, camera_position: Point, camera_zoom: float, ui_size: float, bins: int, red_factor: float) -> None:
@@ -60,7 +59,20 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
         context.set_line_join(cairo.LINE_JOIN_ROUND)
         context.set_line_cap(cairo.LINE_CAP_ROUND)
         context.stroke()
-        surface.write_to_png("render.png")
+
+        raw = surface.get_data().tolist()
+        counter = 0
+        image = np.empty((1000, 1000, 3), dtype=np.uint8)
+        for x in range(1000):
+            for y in range(1000):
+                for c in range(3):
+                    image[x][y][2 - c] = raw[counter]
+                    counter += 1
+                counter += 1
+
+    fig, ax = plt.subplots()
+    ax.imshow(image)
+    ax.set_title("Propagated paths from transmitter to receiver")
 
     fig, ax = plt.subplots()
     ax.hist([path.delay for path in multipath], weights=[path.power for path in multipath], bins=bins, rwidth=0.9)
@@ -72,22 +84,20 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
     camera_maximum = Point(camera_position.x + 0.5 / camera_zoom, camera_position.y + 0.5 / camera_zoom)
 
     def r_transform(point: Point) -> tuple[int, int]:
-        return (round((500 - 1) * (point.y - camera_minimum.y) / (camera_maximum.y - camera_minimum.y)),
-                round((500 - 1) * (point.x - camera_minimum.x) / (camera_maximum.x - camera_minimum.x)))
+        return (round((100 - 1) * (point.y - camera_minimum.y) / (camera_maximum.y - camera_minimum.y)),
+                round((100 - 1) * (point.x - camera_minimum.x) / (camera_maximum.x - camera_minimum.x)))
 
-    image = np.ones((500, 500))
+    image = np.zeros((100, 100))
     for path in multipath:
         for point_1, point_2 in pairwise(path):
             r1, c1 = r_transform(point_1)
             r2, c2 = r_transform(point_2)
             rr, cc = line(r1, c1, r2, c2)
-            image[rr, cc] *= 1.1
+            image[rr, cc] += path.power
     image_flat = image.flatten()
     image_low = np.percentile(image_flat, 5)
     image_high = np.percentile(image_flat, 95)
-
-    blurred = gaussian(image, sigma=(2, 2), truncate=10)
-
     fig, ax = plt.subplots()
-    ax.imshow(blurred, vmin=image_low, vmax=image_high, origin="lower", cmap="inferno")
+    ax.imshow(image, vmin=image_low, vmax=image_high, origin="lower", cmap="inferno", interpolation="gaussian")
+    ax.set_title("Relative radiation of propagated paths")
     plt.show()
