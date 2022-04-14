@@ -1,7 +1,9 @@
-from __future__ import annotations
-from math import pi, tau, cos, sin, sqrt
+import sys
+import os.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
+from math import tau, cos, sin, sqrt
 from random import seed, random
-from multipatprop import System, Transmitter, Receiver, Interferer, Point, DigitalSignal
+from multipatprop import System, Transmitter, Receiver, Interferer, Point
 from output import render
 
 seed(5)

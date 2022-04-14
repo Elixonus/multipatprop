@@ -1,8 +1,8 @@
-from __future__ import annotations
-from math import pi
+import sys
+import os.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 from random import seed
-from copy import deepcopy
-from multipatprop import System, Transmitter, Receiver, Interferer, Point, DigitalSignal
+from multipatprop import System, Transmitter, Receiver, Interferer, Point
 from output import render
 
 seed(1123)
