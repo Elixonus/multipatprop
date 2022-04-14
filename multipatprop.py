@@ -28,6 +28,7 @@ class System:
             starting_angle = tau * (n / starting_number)
             starting_vector = Vector(cos(starting_angle), sin(starting_angle))
             path = self.get_path(starting_vector, receiver_diameter, max_reflections, power_multiplier)
+            # figure out if path propagated
             if path is not None:
                 paths.append(path)
         multipath = Multipath(paths)
@@ -52,6 +53,7 @@ class System:
                     intersection = ray.intersect(segment)
                     if type(intersection) is Point:
                         point = intersection
+                        # closest intersection is the point of reflection
                         if not closest or ray.p1.distance(point) < ray.p1.distance(closest_point):
                             closest = True
                             closest_point = point
@@ -62,9 +64,11 @@ class System:
                 return
             points.append(closest_point)
             hits.append(closest_interferer)
+            # calculate reflected ray
             normal = Vector(-closest_segment.v.y, closest_segment.v.x).normalized()
             vector = vector.reflect(normal)
 
+            # determine ray propagation to target
             if ray.p1.distance(self.receiver.position) < ray.p1.distance(closest_point):
                 if ray.distance(self.receiver.position) < receiver_diameter / 2:
                     points.append(self.receiver.position.copy())
@@ -108,6 +112,7 @@ class Interferer:
 
     @classmethod
     def shape(cls, points: list[Point], position: Point, scale: float, rotation: float) -> Interferer:
+        """Create a shape with points and transformations from which an interferer will be created."""
         for point in points:
             angle = atan2(point.y, point.x) + rotation
             radius = hypot(point.x, point.y) * scale
@@ -117,6 +122,7 @@ class Interferer:
 
     @classmethod
     def square(cls, position: Point, length: float, rotation: float) -> Interferer:
+        """Create a square shaped interferer."""
         length_half = length / 2
         points = [Point(length_half, length_half),
                   Point(length_half, -length_half),
@@ -126,6 +132,7 @@ class Interferer:
 
     @classmethod
     def rectangle(cls, position: Point, length: float, width: float, rotation: float) -> Interferer:
+        """Create a rectangle shaped interferer."""
         length_half = length / 2
         width_half = width / 2
         points = [Point(length_half, width_half),
@@ -136,6 +143,7 @@ class Interferer:
 
     @classmethod
     def polygon(cls, position: Point, diameter: float, number_sides: int, rotation: float) -> Interferer:
+        """Create a regular polygon shaped interferer."""
         radius = diameter / 2
         points = []
         for p in range(number_sides):
@@ -146,6 +154,7 @@ class Interferer:
 
     @classmethod
     def circle(cls, position: Point, radius: float, number_points: int) -> Interferer:
+        """Create a circular shaped interferer."""
         points = []
         for p in range(number_points):
             angle = tau * (p / number_points)
@@ -155,6 +164,7 @@ class Interferer:
 
     @classmethod
     def blob(cls, position: Point, average_radius: float, number_points: int, smoothing_factor: float = 0, smoothing_iterations: int = 0) -> Interferer:
+        """Create a random smoothly shaped interferer."""
         points = []
         for p in range(number_points):
             angle = tau * (p / number_points)
@@ -172,6 +182,7 @@ class Interferer:
 
 
 class Multipath:
+    """A structure containing multiple propagated paths."""
     paths: list[Path]
 
     def __init__(self, paths: list[Path]) -> None:
@@ -187,6 +198,7 @@ class Multipath:
 
 
 class Path:
+    """Propagated path containing points of travel, final power and delay."""
     points: list[Point]
     power: float
     delay: float

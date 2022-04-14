@@ -14,7 +14,7 @@ while True:
     try:
         print("\n(-5, -5) is the bottom left of the viewport, (5, 5) is the top right of the viewport.")
         print("The transmitter is hardcoded positioned at (-2, -2.5).")
-        print("Enter the position of the receiver (x, and then y).")
+        print("Enter the position of the receiver.")
         receiver_x = float(input("Receiver x: "))
         receiver_y = float(input("Receiver y: "))
     except:
