@@ -121,6 +121,9 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
     print("Done, displaying results...")
     sleep(1)
     plt.show()
+    print(f"Number of propagated paths: {len(multipath.paths)}")
+    print(f"Shortest path time: {min(path.delay for path in multipath)} seconds")
+    print(f"Longest path time: {max(path.delay for path in multipath)} seconds")
 
 
 if __name__ == "__main__":
