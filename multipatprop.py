@@ -31,7 +31,7 @@ class System:
             # figure out if path propagated
             if path is not None:
                 paths.append(path)
-        multipath = Multipath(paths)
+        multipath = Multipath(paths, starting_number)
         return multipath
 
     def get_path(self, starting_vector: Vector, receiver_diameter: float, max_reflections: int, power_multiplier: float = 0.9) -> Path | None:
@@ -184,9 +184,11 @@ class Interferer:
 class Multipath:
     """A structure containing multiple propagated paths."""
     paths: list[Path]
+    starting_number: int
 
-    def __init__(self, paths: list[Path]) -> None:
+    def __init__(self, paths: list[Path], starting_number: int) -> None:
         self.paths = paths
+        self.starting_number = starting_number
     
     def __iter__(self) -> Iterable[Path]:
         for path in self.paths:

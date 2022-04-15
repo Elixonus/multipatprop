@@ -110,7 +110,7 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
     fig, ax = plt.subplots()
     ax.hist([path.delay for path in multipath], weights=[path.power for path in multipath], bins=bins, rwidth=0.9)
     ax.set_xlabel("Time")
-    ax.set_ylabel("Relative Signal Energy")
+    ax.set_ylabel("Relative Signal Energy Rate")
     ax.set_title("Energy function of propagated waves")
 
     # rendering visualization of system
@@ -118,12 +118,14 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
     ax.imshow(image)
     ax.set_title("Propagated paths from transmitter to receiver")
 
-    print("Done, displaying results...")
+    print("Done, displaying results...\n")
     sleep(1)
-    plt.show()
+    print(f"Total number of paths paths: {multipath.starting_number}")
     print(f"Number of propagated paths: {len(multipath.paths)}")
+    print(f"Propagation rate: {100 * (len(multipath.paths) / multipath.starting_number):.2f}%")
     print(f"Shortest path time: {min(path.delay for path in multipath)} seconds")
     print(f"Longest path time: {max(path.delay for path in multipath)} seconds")
+    plt.show()
 
 
 if __name__ == "__main__":
