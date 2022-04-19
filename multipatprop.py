@@ -102,10 +102,14 @@ class Interferer:
     segments: list[Segment]
     hits: int
 
-    def __init__(self, points: list[Point]) -> None:
+    def __init__(self, points: list[Point], closed=True) -> None:
         self.points = points
         self.segments = []
-        for point_1, point_2 in pairwise(points + [points[0]]):
+        if closed:
+            all_points = points + [points[0]]
+        else:
+            all_points = points
+        for point_1, point_2 in pairwise(all_points):
             segment = Segment(point_1, point_2)
             self.segments.append(segment)
         self.hits = 0
