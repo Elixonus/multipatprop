@@ -5,7 +5,7 @@ import cairo
 import matplotlib.pyplot as plt
 import numpy as np
 from skimage.draw import line
-from multipatprop import System, Multipath, Point
+from .multipatprop import System, Multipath, Point
 
 
 def render(system: System, multipath: Multipath, camera_position: Point, camera_zoom: float, ui_size: float, bins: int, red_factor: float) -> None:

@@ -1,9 +1,6 @@
-import sys
-import os.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 from random import seed
-from multipatprop import System, Transmitter, Receiver, Interferer, Point
-from output import render
+from multipatprop.multipatprop import System, Transmitter, Receiver, Interferer, Point
+from multipatprop.output import render
 
 seed(1123)
 

@@ -1,12 +1,7 @@
-import sys
-import os.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
-from math import pi
-from random import seed
 from mazelib import Maze
 from mazelib.generate.Prims import Prims
-from multipatprop import System, Transmitter, Receiver, Interferer, Point
-from output import render
+from multipatprop.multipatprop import System, Transmitter, Receiver, Interferer, Point
+from multipatprop.output import render
 
 
 maze = Maze(1)
