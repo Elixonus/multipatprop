@@ -22,7 +22,7 @@ class System:
     def get_multipath(self, starting_number: int, receiver_diameter: float, max_reflections: int, power_multiplier: float = 0.9) -> Multipath:
         """Finds the path of a number of propagated transmissions distributed evenly in every direction.
         Each path returns with a vector indicating the last direction."""
-        print("Calculating propagated paths...")
+        print("Calculating propagated paths...", end="\r")
         paths = []
         for n in range(starting_number):
             starting_angle = tau * (n / starting_number)
@@ -31,7 +31,9 @@ class System:
             # figure out if path propagated
             if path is not None:
                 paths.append(path)
+                print(f"Calculating propagated paths... ({len(paths)})", end="\r")
         multipath = Multipath(paths, starting_number)
+        print()
         return multipath
 
     def get_path(self, starting_vector: Vector, receiver_diameter: float, max_reflections: int, power_multiplier: float = 0.9) -> Path | None:

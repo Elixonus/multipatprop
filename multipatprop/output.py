@@ -120,7 +120,7 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
 
     print("Done, displaying results...\n")
     sleep(1)
-    print(f"Total number of paths paths: {multipath.starting_number}")
+    print(f"Total number of paths: {multipath.starting_number}")
     print(f"Number of propagated paths: {len(multipath.paths)}")
     print(f"Propagation rate: {100 * (len(multipath.paths) / multipath.starting_number):.2f}%")
     if len(multipath.paths) > 0:
