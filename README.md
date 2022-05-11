@@ -1,6 +1,11 @@
 # multipatprop :high_brightness:
 Multipath propagation simulation using ray-casting method and finite element analysis.
 
+## Usage
+```pip install -r requirements.txt```
+
+```python mpp_(example)``` where **(example)** is the remainder file name of the program you want to run.
+
 ## Algorithm
 Transmitter sends signals in every direction with a limited number of starting paths.
 Receiver collects all the propagated paths (paths that made it to the receiver) and records the data of these.
