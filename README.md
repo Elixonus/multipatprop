@@ -17,3 +17,14 @@ the time is separated into bars and for every path propagated, the bar with the 
 In an urban environment, the interferers may act as the city blocks, the transmitter as a cell tower and the receiver as a phone away from the source.
 
 From the way the simulation is designed, modelled are the known multipath effects of ghosting, fading, delay, and interference.
+
+## Gallery
+### City Example
+![City 1](gallery/city/1.png)
+![City 2](gallery/city/2.png)
+![City 3](gallery/city/3.png)
+
+### Blobs Example
+![Blobs 1](gallery/blobs/1.png)
+![Blobs 2](gallery/blobs/2.png)
+![Blobs 3](gallery/blobs/3.png)
