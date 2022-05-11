@@ -1,4 +1,4 @@
-# multipatprop
+# multipatprop :high_brightness:
 Multipath propagation simulation using ray-casting method and finite element analysis.
 
 ## Algorithm
@@ -16,4 +16,4 @@ the time is separated into bars and for every path propagated, the bar with the 
 ## Applicability
 In an urban environment, the interferers may act as the city blocks, the transmitter as a cell tower and the receiver as a phone away from the source.
 
-From the way the simulation is designed, modelled are the known multipath effects such as ghosting, fading, delay, and interference.
+From the way the simulation is designed, modelled are the known multipath effects of ghosting, fading, delay, and interference.
