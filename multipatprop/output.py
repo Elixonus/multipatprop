@@ -104,7 +104,7 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
     fig, ax = plt.subplots()
     im = ax.imshow(density, vmin=density_low, vmax=density_high, origin="lower", cmap="inferno", interpolation="gaussian")
     plt.colorbar(im)
-    ax.set_title("Relative radiation of propagated paths")
+    ax.set_title("Relative density of propagated paths")
 
     # rendering energy time function
     fig, ax = plt.subplots()
