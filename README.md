@@ -12,3 +12,8 @@ The algorithm described above allows us to make a visualization of all the paths
 
 To make the time energy graph, which describes the rate of energy (non-cumulative) received by the receiver from all direction at any time,
 the time is separated into bars and for every path propagated, the bar with the corresponding travel time is selected to be added by the final energy of it.
+
+## Applicability
+In an urban environment, the interferers may act as the city blocks, the transmitter as a cell tower and the receiver as a phone away from the source.
+
+From the way the simulation is designed, modelled are the known multipath effects such as ghosting, fading, delay, and interference.
