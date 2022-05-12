@@ -1,6 +1,8 @@
 # multipatprop :high_brightness:
 Multipath propagation simulation using ray-casting method and finite element analysis.
 
+![Multipath Diagram](gallery/diagram.png)
+
 ## Usage
 ```pip install -r requirements.txt```
 
