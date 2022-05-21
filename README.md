@@ -1,4 +1,4 @@
-# multipatprop :high_brightness:
+# multipatprop 🔆
 Multipath propagation simulation using ray-casting method and finite element analysis.
 
 ![Multipath Diagram](gallery/diagram.png)
