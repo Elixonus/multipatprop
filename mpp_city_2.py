@@ -1,7 +1,7 @@
 from math import pi
 from random import seed, random, randint
-from multipatprop.multipatprop import System, Transmitter, Receiver, Interferer, Point
-from multipatprop.output import render
+from multipatprop import System, Transmitter, Receiver, Interferer, Point
+from output import render
 
 seed(11230)
 

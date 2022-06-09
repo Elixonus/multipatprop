@@ -1,11 +1,14 @@
 from math import pi
 from random import seed, random, randint
-from multipatprop.multipatprop import System, Transmitter, Receiver, Interferer, Point
-from multipatprop.output import render
+from multipatprop import System, Transmitter, Receiver, Interferer, Point
+from output import render
 
 seed(1123)
 
 print("This interactive example will simulate the multipath propagation of waves around a city environment.")
+
+receiver_x = 0.0
+receiver_y = 0.0
 
 while True:
     try:

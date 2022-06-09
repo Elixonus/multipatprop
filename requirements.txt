@@ -1,5 +1,0 @@
-matplotlib~=3.5.1
-numpy~=1.22.3
-scikit-image~=0.19.2
-euclid~=1.2
-mazelib~=0.9.13

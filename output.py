@@ -5,7 +5,7 @@ import cairo
 import matplotlib.pyplot as plt
 import numpy as np
 from skimage.draw import line
-from .multipatprop import System, Multipath, Point
+from multipatprop import System, Multipath, Point
 
 
 def render(system: System, multipath: Multipath, camera_position: Point, camera_zoom: float, ui_size: float, bins: int, red_factor: float) -> None:
@@ -108,7 +108,7 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
 
     # rendering energy time function
     fig, ax = plt.subplots()
-    ax.hist([path.delay for path in multipath], weights=[path.power for path in multipath], bins=bins, rwidth=0.9)
+    ax.hist([path.delay for path in multipath], weights=[path.power for path in multipath], bins=bins, rwidth=0.95)
     ax.set_xlabel("Time")
     ax.set_ylabel("Relative Signal Energy Rate")
     ax.set_title("Energy function of propagated waves")
@@ -117,6 +117,18 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
     fig, ax = plt.subplots()
     ax.imshow(image)
     ax.set_title("Propagated paths from transmitter to receiver")
+
+
+
+
+
+
+
+
+
+
+
+
 
     print("Done, displaying results...\n")
     sleep(1)
