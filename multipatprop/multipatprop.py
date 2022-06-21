@@ -18,6 +18,10 @@ class System:
         self.interferers = interferers
 
     def get_path(self, transmitting_angle: float, receiving_radius: float, max_reflections: int) -> dict | None:
+        collision_points = []
+        collision_segments = []
+        collision_interferers = []
+
         points = [self.transmitter.position.copy()]
         transmitting_vector = Vector(cos(transmitting_angle), sin(transmitting_angle))
         vector = transmitting_vector
@@ -44,15 +48,28 @@ class System:
 
             if not close:
                 # case light goes away from all interferers
-                return {"path": points, "exiting_angle": atan2(vector.y, vector.x)}
+                return {
+                    "path_points": points,
+                    "collision_points": collision_points,
+                    "collision_segments": collision_segments,
+                    "collision_interferers": collision_interferers,
+                    "exiting_angle": atan2(vector.y, vector.x)}
             points.append(closest_point)
+            collision_points.append(closest_point)
+            collision_segments.append(closest_segment)
+            collision_interferers.append(closest_interferer)
             # calculate reflected ray
             normal = Vector(-closest_segment.v.y, closest_segment.v.x).normalized()
             vector = vector.reflect(normal)
             ray = Ray(closest_point, vector)
             segment_ignore = closest_segment
         # case light reaches the max_reflections limit
-        return {"path": points}
+        return {
+            "path_points": points,
+            "collision_points": collision_points,
+            "collision_segments": collision_segments,
+            "collision_interferers": collision_interferers,
+        }
 
 
 class Transmitter:
