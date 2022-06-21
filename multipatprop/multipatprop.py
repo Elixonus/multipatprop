@@ -3,7 +3,7 @@
 from __future__ import annotations
 from math import tau, cos, sin, atan2, hypot
 from itertools import pairwise
-from euclid import Point2 as Point, Vector2 as Vector, Ray2 as Ray, LineSegment2 as Segment
+from multipatprop.geometry import Point, Vector, Ray, Segment
 
 
 class System:
@@ -17,11 +17,10 @@ class System:
         self.receiver = receiver
         self.interferers = interferers
 
-    def get_path(self, transmitting_angle: float, receiving_radius: float, max_reflections: int) -> dict | None:
+    def get_path(self, transmitting_angle: float, max_reflections: int) -> dict:
         collision_points = []
         collision_segments = []
         collision_interferers = []
-
         points = [self.transmitter.position.copy()]
         transmitting_vector = Vector(cos(transmitting_angle), sin(transmitting_angle))
         vector = transmitting_vector
@@ -71,6 +70,14 @@ class System:
             "collision_interferers": collision_interferers,
         }
 
+    def get_paths(self, transmission_count: int, max_reflections_per_transmission: int) -> list[dict]:
+        paths = []
+        for t in range(transmission_count):
+            angle = tau * (t / transmission_count)
+            path = self.get_path(transmitting_angle=angle, max_reflections=max_reflections_per_transmission)
+            paths.append(path)
+        return paths
+
 
 class Transmitter:
     """A device that sends electromagnetic waves in every direction."""
@@ -93,7 +100,7 @@ class Interferer:
     points: list[Point]
     segments: list[Segment]
 
-    def __init__(self, points: list[Point], closed=True) -> None:
+    def __init__(self, points: list[Point] | list[tuple[float, float]], closed=True) -> None:
         self.points = points
         self.segments = []
         if closed:
