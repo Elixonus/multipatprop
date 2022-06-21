@@ -82,14 +82,26 @@ class System:
         path = self.get_path(transmitting_angle, max_reflections)
         for point_1, point_2 in pairwise(path["path_points"]):
             segment = Segment(point_1, point_2)
-            if self.receiver.position.distance(segment) < receiving_radius:
-                path["path_points"].append(self.receiver.position.copy())
-                return path
+            try:
+                if self.receiver.position.distance(segment) < receiving_radius:
+                    path["path_points"].append(self.receiver.position.copy())
+                    return path
+            except AssertionError:
+                return None
         ray = Ray(path["path_points"][-1], Vector(cos(path["exiting_angle"]), sin(path["exiting_angle"])))
         if self.receiver.position.distance(ray) < receiving_radius:
             path["path_points"].append(self.receiver.position.copy())
             return path
         return None
+
+    def get_paths_propagated(self, transmission_count: int, max_reflections_per_transmission: int, receiving_radius: float) -> list[dict]:
+        paths = []
+        for t in range(transmission_count):
+            angle = tau * (t / transmission_count)
+            path = self.get_path_propagated(transmitting_angle=angle, max_reflections=max_reflections_per_transmission, receiving_radius=receiving_radius)
+            if path is not None:
+                paths.append(path)
+        return paths
 
 
 class Transmitter:
