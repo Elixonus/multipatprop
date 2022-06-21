@@ -78,6 +78,19 @@ class System:
             paths.append(path)
         return paths
 
+    def get_path_propagated(self, transmitting_angle: float, max_reflections: int, receiving_radius: float) -> dict | None:
+        path = self.get_path(transmitting_angle, max_reflections)
+        for point_1, point_2 in pairwise(path["path_points"]):
+            segment = Segment(point_1, point_2)
+            if self.receiver.position.distance(segment) < receiving_radius:
+                path["path_points"].append(self.receiver.position.copy())
+                return path
+        ray = Ray(path["path_points"][-1], Vector(cos(path["exiting_angle"]), sin(path["exiting_angle"])))
+        if self.receiver.position.distance(ray) < receiving_radius:
+            path["path_points"].append(self.receiver.position.copy())
+            return path
+        return None
+
 
 class Transmitter:
     """A device that sends electromagnetic waves in every direction."""
