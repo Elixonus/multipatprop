@@ -10,12 +10,11 @@ To install dependencies
 ```
 pip install -r requirements.txt
 ```
-
 To run a demonstrating script
 ```
 python mpp_example
 ```
-where **example** is the remainder file name of the program you want to run.
+where `example` is the remainder file name of the program you want to run.
 
 ## Algorithm
 
@@ -27,12 +26,12 @@ However, every collision the signal makes with an interferer, the energy of the 
 
 The algorithm described above allows us to make a visualization of all the paths that reach the target.
 
-To make the time energy graph, which describes the rate of energy (non-cumulative) received by the receiver from all direction at any time,
-the time is separated into bars and for every path propagated, the bar with the corresponding travel time is selected to be added by the final energy of it.
+To make the time energy graph, which describes the rate of energy (non-cumulative) received by the receiver from all directions at any time,
+the time is separated into bars and for every path propagated, the bar with the corresponding travel time is selected and is incremented by the final energy of the wave.
 
 ## Applicability
 
-In an urban environment, the interferers may act as the city blocks, the transmitter as a cell tower and the receiver as a phone away from the source.
+In an urban environment, the interferers may act as the city blocks, the transmitter as the cell tower and the receiver as the phone. In a special case scenario where the transmitter and receiver are on the same position, the results can be treated as from a fast-rotating radar.
 
 From the way the simulation is designed, modelled are the known multipath effects of ghosting, fading, delay, and interference.
 
