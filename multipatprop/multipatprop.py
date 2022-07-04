@@ -1,7 +1,7 @@
 """A library for simulating multipath propagation of electromagnetic waves under interference."""
 
 from __future__ import annotations
-from math import tau, cos, sin, atan2, hypot
+from math import pi, tau, cos, sin, atan2, hypot
 from random import random
 from itertools import pairwise
 from typing import Iterable
@@ -31,7 +31,7 @@ class System:
             # figure out if path propagated
             if path is not None:
                 paths.append(path)
-                print(f"Calculating propagated paths... ({len(paths)})", end="\r")
+                print(f"Calculating propagated paths... (number: {len(paths)}, angle: {round(starting_angle * 180 / pi)})", end="\r")
         multipath = Multipath(paths, starting_number)
         print()
         return multipath
