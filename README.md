@@ -12,7 +12,7 @@ pip install -r requirements.txt
 ```
 To run a demonstrating script
 ```
-python mpp_example
+python multipatprop/mpp_example
 ```
 where `example` is the remainder file name of the program you want to run.
 

@@ -5,6 +5,8 @@ import cairo
 import matplotlib.pyplot as plt
 import numpy as np
 from skimage.draw import line
+from rich.console import Console
+from rich.table import Table
 from multipatprop import System, Multipath, Point
 
 
@@ -118,17 +120,15 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
     ax.imshow(image)
     ax.set_title("Propagated paths from transmitter to receiver")
 
+    # creating path table
+    table = Table(title="Propagated paths")
+    table.add_column("Number")
+    table.add_column("Hits")
+    table.add_column("Relative power")
+    table.add_column("Delay")
 
-
-
-
-
-
-
-
-
-
-
+    for p, path in enumerate(multipath):
+        table.add_row(f"{p + 1}", f"{len(path.hits)}", f"{path.power:.5f}", f"{path.delay:.2E}")
 
     print("Done, displaying results...\n")
     sleep(1)
@@ -138,6 +138,8 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
     if len(multipath.paths) > 0:
         print(f"Shortest path time: {min(path.delay for path in multipath)} seconds")
         print(f"Longest path time: {max(path.delay for path in multipath)} seconds")
+    console = Console()
+    console.print(table)
     plt.show()
 
 
