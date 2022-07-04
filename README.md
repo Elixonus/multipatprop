@@ -31,7 +31,7 @@ the time is separated into bars and for every path propagated, the bar with the 
 
 ## Applicability
 
-In an urban environment, the interferers may act as the city blocks, the transmitter as the cell tower and the receiver as the phone. In a special case scenario where the transmitter and receiver are on the same position, the results can be treated as from a fast-rotating radar.
+In an urban environment, the interferers may act as the city blocks, the transmitter as the cell tower and the receiver as the phone. In a special case scenario where the transmitter and receiver are on the same position, the results can be treated as coming from a search radar.
 
 From the way the simulation is designed, modelled are the known multipath effects of ghosting, fading, delay, and interference.
 
