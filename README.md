@@ -12,9 +12,9 @@ pip install -r requirements.txt
 ```
 To run a demonstrating script
 ```
-python multipatprop/mpp_example
+python multipatprop/<mpp_example>
 ```
-where `example` is the remainder file name of the program you want to run.
+where `<mpp_example>` is the file name of the program you want to run.
 
 ## Algorithm
 
