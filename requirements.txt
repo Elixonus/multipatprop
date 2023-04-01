@@ -3,6 +3,5 @@ matplotlib
 numpy
 Pillow
 pycairo
-PyQt5
 rich
 scikit-image

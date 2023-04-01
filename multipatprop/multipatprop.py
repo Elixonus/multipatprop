@@ -4,7 +4,7 @@ from __future__ import annotations
 from math import pi, tau, cos, sin, atan2, hypot
 from random import random
 from itertools import pairwise
-from typing import Iterable
+from typing import Iterable, Iterator
 from euclid import Point2 as Point, Vector2 as Vector, Ray2 as Ray, LineSegment2 as Segment
 
 
@@ -45,9 +45,7 @@ class System:
         segment_ignore = None
         for r in range(max_reflections):
             closest = False
-            closest_point = None
-            closest_segment = None
-            closest_interferer = None
+            closest_point = Point(0, 0)
             for interferer in self.interferers:
                 for s, segment in enumerate(interferer.segments):
                     if segment is segment_ignore:
@@ -63,7 +61,7 @@ class System:
                             closest_interferer = interferer
 
             if not closest:
-                return
+                return None
             points.append(closest_point)
             hits.append(closest_interferer)
             # calculate reflected ray
@@ -79,7 +77,7 @@ class System:
 
             ray = Ray(closest_point, vector)
             segment_ignore = closest_segment
-        return
+        return None
 
 
 class Transmitter:
@@ -196,7 +194,7 @@ class Multipath:
         self.paths = paths
         self.starting_number = starting_number
     
-    def __iter__(self) -> Iterable[Path]:
+    def __iter__(self) -> Iterator[Path]:
         for path in self.paths:
             yield path
 
@@ -222,7 +220,7 @@ class Path:
             self.power *= power_multiplier
         self.hits = hits
 
-    def __iter__(self) -> Iterable[Point]:
+    def __iter__(self) -> Iterator[Point]:
         for point in self.points:
             yield point
 
@@ -246,7 +244,7 @@ class DigitalSignal:
         self.times = times
         self.strengths = strengths
 
-    def __iter__(self) -> tuple[float, float]:
+    def __iter__(self) -> Iterator[tuple[float, float]]:
         for n in range(self.number):
             yield self.times[n], self.strengths[n]
 
