@@ -5,21 +5,38 @@ from math import pi, tau, cos, sin, atan2, hypot
 from random import random
 from itertools import pairwise
 from typing import Iterable, Iterator
-from euclid import Point2 as Point, Vector2 as Vector, Ray2 as Ray, LineSegment2 as Segment
+from euclid import (
+    Point2 as Point,
+    Vector2 as Vector,
+    Ray2 as Ray,
+    LineSegment2 as Segment,
+)
 
 
 class System:
     """A multipath propagation system where a transmitter and receiver exist as well as interferers."""
+
     transmitter: Transmitter
     receiver: Receiver
     interferers: list[Interferer]
 
-    def __init__(self, transmitter: Transmitter, receiver: Receiver, interferers: list[Interferer]) -> None:
+    def __init__(
+        self,
+        transmitter: Transmitter,
+        receiver: Receiver,
+        interferers: list[Interferer],
+    ) -> None:
         self.transmitter = transmitter
         self.receiver = receiver
         self.interferers = interferers
 
-    def get_multipath(self, starting_number: int, receiver_diameter: float, max_reflections: int, power_multiplier: float = 0.9) -> Multipath:
+    def get_multipath(
+        self,
+        starting_number: int,
+        receiver_diameter: float,
+        max_reflections: int,
+        power_multiplier: float = 0.9,
+    ) -> Multipath:
         """Finds the path of a number of propagated transmissions distributed evenly in every direction.
         Each path returns with a vector indicating the last direction."""
         print("Calculating propagated paths...", end="\r")
@@ -27,16 +44,27 @@ class System:
         for n in range(starting_number):
             starting_angle = tau * (n / starting_number)
             starting_vector = Vector(cos(starting_angle), sin(starting_angle))
-            path = self.get_path(starting_vector, receiver_diameter, max_reflections, power_multiplier)
+            path = self.get_path(
+                starting_vector, receiver_diameter, max_reflections, power_multiplier
+            )
             # figure out if path propagated
             if path is not None:
                 paths.append(path)
-                print(f"Calculating propagated paths... (number: {len(paths)}, angle: {round(starting_angle * 180 / pi)})", end="\r")
+                print(
+                    f"Calculating propagated paths... (number: {len(paths)}, angle: {round(starting_angle * 180 / pi)})",
+                    end="\r",
+                )
         multipath = Multipath(paths, starting_number)
         print()
         return multipath
 
-    def get_path(self, starting_vector: Vector, receiver_diameter: float, max_reflections: int, power_multiplier: float = 0.9) -> Path | None:
+    def get_path(
+        self,
+        starting_vector: Vector,
+        receiver_diameter: float,
+        max_reflections: int,
+        power_multiplier: float = 0.9,
+    ) -> Path | None:
         """Finds the path of one transmission, returns with vector only if max_reflections is not reached."""
         points = [self.transmitter.position.copy()]
         hits = []
@@ -54,7 +82,9 @@ class System:
                     if type(intersection) is Point:
                         point = intersection
                         # closest intersection is the point of reflection
-                        if not closest or ray.p1.distance(point) < ray.p1.distance(closest_point):
+                        if not closest or ray.p1.distance(point) < ray.p1.distance(
+                            closest_point
+                        ):
                             closest = True
                             closest_point = point
                             closest_segment = segment
@@ -82,6 +112,7 @@ class System:
 
 class Transmitter:
     """A device that sends electromagnetic waves in every direction."""
+
     position: Point
 
     def __init__(self, position: Point) -> None:
@@ -90,6 +121,7 @@ class Transmitter:
 
 class Receiver:
     """A device that receives electromagnetic waves from a transmitter."""
+
     position: Point
 
     def __init__(self, position: Point) -> None:
@@ -98,6 +130,7 @@ class Receiver:
 
 class Interferer:
     """An obstruction between the transmitter and receiver that reflects incoming light."""
+
     points: list[Point]
     segments: list[Segment]
     hits: int
@@ -115,7 +148,9 @@ class Interferer:
         self.hits = 0
 
     @classmethod
-    def shape(cls, points: list[Point], position: Point, scale: float, rotation: float) -> Interferer:
+    def shape(
+        cls, points: list[Point], position: Point, scale: float, rotation: float
+    ) -> Interferer:
         """Create a shape with points and transformations from which an interferer will be created."""
         for point in points:
             angle = atan2(point.y, point.x) + rotation
@@ -128,25 +163,33 @@ class Interferer:
     def square(cls, position: Point, length: float, rotation: float) -> Interferer:
         """Create a square shaped interferer."""
         length_half = length / 2
-        points = [Point(length_half, length_half),
-                  Point(length_half, -length_half),
-                  Point(-length_half, -length_half),
-                  Point(-length_half, length_half)]
+        points = [
+            Point(length_half, length_half),
+            Point(length_half, -length_half),
+            Point(-length_half, -length_half),
+            Point(-length_half, length_half),
+        ]
         return cls.shape(points, position, 1, rotation)
 
     @classmethod
-    def rectangle(cls, position: Point, length: float, width: float, rotation: float) -> Interferer:
+    def rectangle(
+        cls, position: Point, length: float, width: float, rotation: float
+    ) -> Interferer:
         """Create a rectangle shaped interferer."""
         length_half = length / 2
         width_half = width / 2
-        points = [Point(length_half, width_half),
-                  Point(length_half, -width_half),
-                  Point(-length_half, -width_half),
-                  Point(-length_half, width_half)]
+        points = [
+            Point(length_half, width_half),
+            Point(length_half, -width_half),
+            Point(-length_half, -width_half),
+            Point(-length_half, width_half),
+        ]
         return cls.shape(points, position, 1, rotation)
 
     @classmethod
-    def polygon(cls, position: Point, diameter: float, number_sides: int, rotation: float) -> Interferer:
+    def polygon(
+        cls, position: Point, diameter: float, number_sides: int, rotation: float
+    ) -> Interferer:
         """Create a regular polygon shaped interferer."""
         radius = diameter / 2
         points = []
@@ -167,7 +210,14 @@ class Interferer:
         return cls.shape(points, position, 1, 0)
 
     @classmethod
-    def blob(cls, position: Point, average_radius: float, number_points: int, smoothing_factor: float = 0, smoothing_iterations: int = 0) -> Interferer:
+    def blob(
+        cls,
+        position: Point,
+        average_radius: float,
+        number_points: int,
+        smoothing_factor: float = 0,
+        smoothing_iterations: int = 0,
+    ) -> Interferer:
         """Create a random smoothly shaped interferer."""
         points = []
         for p in range(number_points):
@@ -180,20 +230,29 @@ class Interferer:
                 point_left = points[p]
                 point_middle = points[(p + 1) % number_points]
                 point_right = points[(p + 2) % number_points]
-                point_target = Point((point_left.x + point_right.x) / 2, (point_left.y + point_right.y) / 2)
-                points[(p + 1) % number_points] = Point(point_middle.x * (1 - smoothing_factor) + point_target.x * smoothing_factor, point_middle.y * (1 - smoothing_factor) + point_target.y * smoothing_factor)
+                point_target = Point(
+                    (point_left.x + point_right.x) / 2,
+                    (point_left.y + point_right.y) / 2,
+                )
+                points[(p + 1) % number_points] = Point(
+                    point_middle.x * (1 - smoothing_factor)
+                    + point_target.x * smoothing_factor,
+                    point_middle.y * (1 - smoothing_factor)
+                    + point_target.y * smoothing_factor,
+                )
         return cls.shape(points, position, 1, tau * random())
 
 
 class Multipath:
     """A structure containing multiple propagated paths."""
+
     paths: list[Path]
     starting_number: int
 
     def __init__(self, paths: list[Path], starting_number: int) -> None:
         self.paths = paths
         self.starting_number = starting_number
-    
+
     def __iter__(self) -> Iterator[Path]:
         for path in self.paths:
             yield path
@@ -205,12 +264,15 @@ class Multipath:
 
 class Path:
     """Propagated path containing points of travel, final power and delay."""
+
     points: list[Point]
     power: float
     delay: float
     hits: list[Interferer]
 
-    def __init__(self, points: list[Point], hits: list[Interferer], power_multiplier: float = 0.9) -> None:
+    def __init__(
+        self, points: list[Point], hits: list[Interferer], power_multiplier: float = 0.9
+    ) -> None:
         self.points = points
         self.delay = 0
         for point_1, point_2 in pairwise(points):
@@ -252,12 +314,15 @@ class DigitalSignal:
         for s, (time_1, time_2) in enumerate(pairwise(self.times)):
             if time_1 <= time <= time_2:
                 balance = (time - time_1) / (time_2 - time_1)
-                strength = (1 - balance) * self.strengths[s] + balance * self.strengths[s + 1]
+                strength = (1 - balance) * self.strengths[s] + balance * self.strengths[
+                    s + 1
+                ]
                 return strength
         return 0
 
 
 if __name__ == "__main__":
     from time import sleep
+
     print("This file is just a library, does not work on its own.")
     sleep(5)

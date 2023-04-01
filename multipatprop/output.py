@@ -10,7 +10,15 @@ from rich.table import Table
 from multipatprop import System, Multipath, Point
 
 
-def render(system: System, multipath: Multipath, camera_position: Point, camera_zoom: float, ui_size: float, bins: int, red_factor: float) -> None:
+def render(
+    system: System,
+    multipath: Multipath,
+    camera_position: Point,
+    camera_zoom: float,
+    ui_size: float,
+    bins: int,
+    red_factor: float,
+) -> None:
     for interferer in system.interferers:
         interferer.hits = 0
     for path in multipath:
@@ -44,14 +52,20 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
             for point in interferer.points:
                 context.line_to(point.x, point.y)
             context.close_path()
-            context.set_source_rgb(1, max(1 - interferer.hits / 100 * red_factor, 0), max(1 - interferer.hits / 100 * red_factor, 0))
+            context.set_source_rgb(
+                1,
+                max(1 - interferer.hits / 100 * red_factor, 0),
+                max(1 - interferer.hits / 100 * red_factor, 0),
+            )
             context.set_line_width(0.05 * ui_size)
             context.set_line_join(cairo.LINE_JOIN_ROUND)
             context.set_line_cap(cairo.LINE_CAP_ROUND)
             context.stroke()
 
         # render transmitter
-        context.arc(system.transmitter.position.x, system.transmitter.position.y, 0.1, 0, tau)
+        context.arc(
+            system.transmitter.position.x, system.transmitter.position.y, 0.1, 0, tau
+        )
         context.set_source_rgb(1, 0, 0)
         context.fill_preserve()
         context.set_source_rgb(1, 1, 1)
@@ -83,12 +97,26 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
 
     print("Making path density visualization...")
     # using minimum and maximum viewport coordinates to reverse transform coordinates
-    camera_minimum = Point(camera_position.x - 0.5 / camera_zoom, camera_position.y - 0.5 / camera_zoom)
-    camera_maximum = Point(camera_position.x + 0.5 / camera_zoom, camera_position.y + 0.5 / camera_zoom)
+    camera_minimum = Point(
+        camera_position.x - 0.5 / camera_zoom, camera_position.y - 0.5 / camera_zoom
+    )
+    camera_maximum = Point(
+        camera_position.x + 0.5 / camera_zoom, camera_position.y + 0.5 / camera_zoom
+    )
 
     def r_transform(p: Point) -> tuple[int, int]:
-        return (round((100 - 1) * (p.y - camera_minimum.y) / (camera_maximum.y - camera_minimum.y)),
-                round((100 - 1) * (p.x - camera_minimum.x) / (camera_maximum.x - camera_minimum.x)))
+        return (
+            round(
+                (100 - 1)
+                * (p.y - camera_minimum.y)
+                / (camera_maximum.y - camera_minimum.y)
+            ),
+            round(
+                (100 - 1)
+                * (p.x - camera_minimum.x)
+                / (camera_maximum.x - camera_minimum.x)
+            ),
+        )
 
     # calculating density by drawing rasterized lines virtually with scipy
     density = np.zeros((100, 100))
@@ -104,13 +132,25 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
 
     # rendering density map
     fig, ax = plt.subplots()
-    im = ax.imshow(density, vmin=density_low, vmax=density_high, origin="lower", cmap="inferno", interpolation="gaussian")
+    im = ax.imshow(
+        density,
+        vmin=density_low,
+        vmax=density_high,
+        origin="lower",
+        cmap="inferno",
+        interpolation="gaussian",
+    )
     plt.colorbar(im)
     ax.set_title("Relative density of propagated paths")
 
     # rendering energy time function
     fig, ax = plt.subplots()
-    ax.hist([path.delay for path in multipath], weights=[path.power for path in multipath], bins=bins, rwidth=0.95)
+    ax.hist(
+        [path.delay for path in multipath],
+        weights=[path.power for path in multipath],
+        bins=bins,
+        rwidth=0.95,
+    )
     ax.set_xlabel("Time")
     ax.set_ylabel("Relative Signal Energy Rate")
     ax.set_title("Energy function of propagated waves")
@@ -128,13 +168,17 @@ def render(system: System, multipath: Multipath, camera_position: Point, camera_
     table.add_column("Delay")
 
     for p, path in enumerate(multipath):
-        table.add_row(f"{p + 1}", f"{len(path.hits)}", f"{path.power:.5f}", f"{path.delay:.2E}")
+        table.add_row(
+            f"{p + 1}", f"{len(path.hits)}", f"{path.power:.5f}", f"{path.delay:.2E}"
+        )
 
     print("Done, displaying results...\n")
     sleep(1)
     print(f"Total number of paths: {multipath.starting_number}")
     print(f"Number of propagated paths: {len(multipath.paths)}")
-    print(f"Propagation rate: {100 * (len(multipath.paths) / multipath.starting_number):.2f}%")
+    print(
+        f"Propagation rate: {100 * (len(multipath.paths) / multipath.starting_number):.2f}%"
+    )
     if len(multipath.paths) > 0:
         print(f"Shortest path time: {min(path.delay for path in multipath)} seconds")
         print(f"Longest path time: {max(path.delay for path in multipath)} seconds")
