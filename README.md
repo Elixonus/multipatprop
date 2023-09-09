@@ -1,6 +1,6 @@
 # multipatprop 🔆
 
-Multipath propagation simulation using ray-casting method and finite element analysis.
+Multipath propagation simulation using ray-casting method.
 
 ![Multipath Diagram](gallery/diagram.png)
 
