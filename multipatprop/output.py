@@ -137,6 +137,7 @@ def render(
         vmin=density_low,
         vmax=density_high,
         origin="lower",
+        extent=(camera_minimum.x, camera_maximum.x, camera_minimum.y, camera_maximum.y),
         cmap="inferno",
         interpolation="gaussian",
     )
@@ -157,7 +158,10 @@ def render(
 
     # rendering visualization of system
     fig, ax = plt.subplots()
-    ax.imshow(image)
+    ax.imshow(
+        image,
+        extent=(camera_minimum.x, camera_maximum.x, camera_minimum.y, camera_maximum.y),
+    )
     ax.set_title("Propagated paths from transmitter to receiver")
 
     # creating path table
