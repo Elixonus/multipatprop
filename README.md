@@ -4,6 +4,10 @@ Multipath propagation simulation using ray-casting method.
 
 ![Multipath Diagram](gallery/diagram.png)
 
+[Image Source](https://www.researchgate.net/profile/Md-Maruf-Ahamed/publication/306113486/figure/fig1/AS:405599469752320@1473713857593/Multipath-propagation-in-outdoor-scenario.png)
+
+Image Citation: Ahamed, Md. Maruf & Faruque, Saleh. (2016). Propagation factors affecting the performance of 5G millimeter wave radio channel. 0728-0733. 10.1109/EIT.2016.7535329.
+
 ## Usage
 
 To install dependencies
