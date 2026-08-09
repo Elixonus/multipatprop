@@ -1,4 +1,4 @@
-# multipatprop 🔆
+# multipatpropvisualizer 🔆
 
 Multipath propagation simulations using ray tracing method.
 
@@ -16,7 +16,7 @@ pip install -r requirements.txt
 ```
 To run a demo script
 ```
-python multipatprop/<mpp_example>
+python multipatpropvisualizer/<mpp_example>
 ```
 where `<mpp_example>` is the file name of the python program.
 
